@@ -1,6 +1,7 @@
 import { createWorld } from "./ecs";
 import {
   SpriteComponent,
+  SpriteFadeComponent,
   PositionComponent,
   VelocityComponent,
   WanderComponent,
@@ -8,6 +9,7 @@ import {
 } from "./components";
 import {
   RenderSystem,
+  SpriteFadeSystem,
   MovementSystem,
   WanderSystem,
   MouseSelectionSystem
@@ -36,6 +38,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     [SpriteComponent, PositionComponent],
     RenderSystem(canvas, w, h)
   );
+  world.addSystem([SpriteComponent, SpriteFadeComponent], SpriteFadeSystem);
   world.addSystem([PositionComponent, VelocityComponent], MovementSystem);
   world.addSystem([VelocityComponent, WanderComponent], WanderSystem);
   world.addSystem(

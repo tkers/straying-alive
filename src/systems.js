@@ -1,5 +1,10 @@
+import chroma from "chroma-js";
 import { hasComponent } from "./ecs";
-import { MembraneComponent, SelectableComponent } from "./components";
+import {
+  MembraneComponent,
+  SpriteFadeComponent,
+  SelectableComponent
+} from "./components";
 import { rnd, turnToDir, getDistance } from "./utils";
 
 export const RenderSystem = (canvas, w, h) => {
@@ -133,3 +138,25 @@ export const MouseSelectionSystem = canvas => {
     mode = 0;
   };
 };
+
+export const SpriteFadeSystem = (ents, dt) =>
+  ents.forEach(ent => {
+    if (!ent.components.SpriteFadeComponent.scale) {
+      ent.components.SpriteFadeComponent.delay -= dt;
+      if (ent.components.SpriteFadeComponent.delay < 0) {
+        ent.components.SpriteFadeComponent.scale = chroma.scale([
+          ent.components.SpriteComponent.color,
+          ent.components.SpriteFadeComponent.color
+        ]);
+      }
+    } else {
+      ent.components.SpriteFadeComponent.time +=
+        dt * ent.components.SpriteFadeComponent.speed;
+      ent.components.SpriteComponent.color = ent.components.SpriteFadeComponent.scale(
+        Math.min(ent.components.SpriteFadeComponent.time, 1)
+      ).hex();
+      if (ent.components.SpriteFadeComponent.time >= 1) {
+        ent.removeComponent(SpriteFadeComponent);
+      }
+    }
+  });

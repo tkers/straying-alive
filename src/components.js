@@ -8,6 +8,14 @@ export function SpriteComponent(size, color) {
   this.color = color;
 }
 
+export function SpriteFadeComponent(color, speed, delay = 0) {
+  this.color = color;
+  this.scale = null;
+  this.speed = speed;
+  this.delay = delay;
+  this.time = 0;
+}
+
 export function MembraneComponent(size, color) {
   this.size = size;
   this.color = color;
