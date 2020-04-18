@@ -5,7 +5,8 @@ import {
   PositionComponent,
   VelocityComponent,
   WanderComponent,
-  ControllableComponent
+  ControllableComponent,
+  SpawnComponent
 } from "./components";
 import {
   RenderSystem,
@@ -14,7 +15,8 @@ import {
   WanderSystem,
   MouseSelectionSystem,
   MouseTargetSystem,
-  NomSystem
+  NomSystem,
+  SpawnSystem
 } from "./systems";
 import { base, blob, enemy } from "./assemblages";
 
@@ -52,5 +54,6 @@ export const createGame = (canvas, w = 960, h = 640) => {
     MouseTargetSystem(canvas)
   );
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
+  world.addSystem([SpawnComponent], SpawnSystem(world));
   return world;
 };

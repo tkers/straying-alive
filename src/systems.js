@@ -183,8 +183,7 @@ export const MouseTargetSystem = canvas => {
 export const SpriteFadeSystem = (ents, dt) =>
   ents.forEach(ent => {
     if (!ent.components.SpriteFadeComponent.scale) {
-      ent.components.SpriteFadeComponent.delay -= dt;
-      if (ent.components.SpriteFadeComponent.delay < 0) {
+      if (ent.components.SpriteFadeComponent.delay(dt)) {
         ent.components.SpriteFadeComponent.scale = chroma.scale([
           ent.components.SpriteComponent.color,
           ent.components.SpriteFadeComponent.color
@@ -224,3 +223,10 @@ export const NomSystem = (ents, dt) => {
     enemy.addComponent(new SpriteFadeComponent("#7ACCAF", 100));
   });
 };
+
+export const SpawnSystem = world => (ents, dt) =>
+  ents.forEach(ent => {
+    if (ent.components.SpawnComponent.interval(dt)) {
+      world.createEntity(ent.components.SpawnComponent.assemblage);
+    }
+  });
