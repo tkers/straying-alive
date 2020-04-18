@@ -1,11 +1,17 @@
 import chroma from "chroma-js";
-import { hasComponent } from "./ecs";
+import { hasComponent, hasTag } from "./ecs";
 import {
   MembraneComponent,
   SpriteFadeComponent,
   ControllableComponent
 } from "./components";
-import { rnd, turnToDir, getDistance, getDirection } from "./utils";
+import {
+  rnd,
+  turnToDir,
+  getDistance,
+  getDirection,
+  combinations
+} from "./utils";
 
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
@@ -195,3 +201,26 @@ export const SpriteFadeSystem = (ents, dt) =>
       }
     }
   });
+
+export const NomSystem = (ents, dt) => {
+  const n = combinations(
+    ents.filter(e => !e.hasComponent(SpriteFadeComponent)),
+    hasTag("blob"),
+    hasTag("enemy")
+  );
+  n.filter(
+    ([blob, enemy]) =>
+      getDistance(
+        blob.components.PositionComponent.x,
+        blob.components.PositionComponent.y,
+        enemy.components.PositionComponent.x,
+        enemy.components.PositionComponent.y
+      ) <
+      blob.components.SpriteComponent.size +
+        enemy.components.SpriteComponent.size
+  ).forEach(([blob, enemy]) => {
+    enemy.removeTag("enemy");
+    enemy.addTag("blob");
+    enemy.addComponent(new SpriteFadeComponent("#7ACCAF", 100));
+  });
+};

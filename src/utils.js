@@ -17,3 +17,9 @@ export const getDirection = (startX, startY, targetX, targetY) => {
   const dy = targetY - startY;
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 };
+
+export const combinations = (elems, isLeft, isRight) => {
+  const left = elems.filter(isLeft);
+  const right = elems.filter(isRight);
+  return left.flatMap(l => right.map(r => [l, r]));
+};
