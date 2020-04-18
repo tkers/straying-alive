@@ -32,3 +32,7 @@ export function WanderComponent(interval, variance, turnSpeed = 180) {
 
   this.resetTimer();
 }
+
+export function SelectableComponent(isSelected) {
+  this.isSelected = isSelected;
+}

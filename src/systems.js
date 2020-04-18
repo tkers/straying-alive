@@ -1,6 +1,6 @@
 import { hasComponent } from "./ecs";
-import { MembraneComponent } from "./components";
-import { rnd, turnToDir } from "./utils";
+import { MembraneComponent, SelectableComponent } from "./components";
+import { rnd, turnToDir, getDistance } from "./utils";
 
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
@@ -36,6 +36,31 @@ export const RenderSystem = (canvas, w, h) => {
       );
       ctx.fill();
     });
+
+    ents
+      .filter(
+        ent =>
+          hasComponent(SelectableComponent)(ent) &&
+          ent.components.SelectableComponent.isSelected
+      )
+      .forEach(ent => {
+        ctx.strokeStyle = "#222";
+        ctx.beginPath();
+        ctx.arc(
+          ent.components.PositionComponent.x,
+          ent.components.PositionComponent.y,
+          ent.components.SpriteComponent.size +
+            (ent.components.MembraneComponent
+              ? ent.components.MembraneComponent.size
+              : 0) +
+            5,
+          0,
+          Math.PI * 2
+        );
+        ctx.setLineDash([10, 5]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
   };
 };
 
@@ -64,3 +89,47 @@ export const WanderSystem = (ents, dt) =>
       );
     }
   });
+
+export const MouseSelectionSystem = canvas => {
+  let clickX = 0;
+  let clickY = 0;
+  let mode = 0;
+  canvas.addEventListener("mousedown", e => {
+    clickX = e.pageX - e.target.offsetLeft;
+    clickY = e.pageY - e.target.offsetTop;
+    mode = 1;
+  });
+
+  window.addEventListener("mouseup", e => {
+    clickX = e.pageX - e.target.offsetLeft;
+    clickY = e.pageY - e.target.offsetTop;
+    mode = 2;
+  });
+
+  return ents => {
+    if (!mode) return;
+
+    if (mode === 1) {
+      const clickedEnt = ents.find(
+        ent =>
+          getDistance(
+            clickX,
+            clickY,
+            ent.components.PositionComponent.x,
+            ent.components.PositionComponent.y
+          ) <= ent.components.SpriteComponent.size
+      );
+
+      if (clickedEnt)
+        clickedEnt.components.SelectableComponent.isSelected = true;
+    }
+
+    if (mode === 2) {
+      ents.forEach(ent => {
+        ent.components.SelectableComponent.isSelected = false;
+      });
+    }
+
+    mode = 0;
+  };
+};
