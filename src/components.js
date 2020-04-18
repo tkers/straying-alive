@@ -49,6 +49,7 @@ export function MembraneComponent(size, color) {
 }
 
 export function VelocityComponent(speed, direction) {
+  this.originalSpeed = speed;
   this.speed = speed;
   this.direction = direction;
 }

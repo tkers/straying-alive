@@ -82,6 +82,15 @@ export const MovementSystem = (ents, dt) =>
       Math.cos(r) * ent.components.VelocityComponent.speed * dt;
     ent.components.PositionComponent.y +=
       Math.sin(r) * ent.components.VelocityComponent.speed * dt;
+    const ds =
+      ent.components.VelocityComponent.originalSpeed -
+      ent.components.VelocityComponent.speed;
+    if (ds > 0) {
+      ent.components.VelocityComponent.speed = Math.min(
+        ent.components.VelocityComponent.originalSpeed,
+        ent.components.VelocityComponent.speed + dt * ds
+      );
+    }
   });
 
 export const WanderSystem = (ents, dt) =>
@@ -166,6 +175,18 @@ export const MouseTargetSystem = canvas => {
     ents
       .filter(ent => ent.components.ControllableComponent.isSelected)
       .forEach(ent => {
+        const dist = getDistance(
+          ent.components.PositionComponent.x,
+          ent.components.PositionComponent.y,
+          mouseX,
+          mouseY
+        );
+
+        ent.components.VelocityComponent.speed =
+          dist < ent.components.VelocityComponent.originalSpeed
+            ? dist
+            : ent.components.VelocityComponent.originalSpeed;
+
         const targetDir = getDirection(
           ent.components.PositionComponent.x,
           ent.components.PositionComponent.y,
