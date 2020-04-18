@@ -1,0 +1,10 @@
+{
+  "name": "ld46",
+  "version": "1.0.0",
+  "description": "ldjam 46 game",
+  "main": "index.js",
+  "repository": "git@github.com:tkers/ld46.git",
+  "author": "Tijn Kersjes <tijn@divbyzero.nl>",
+  "license": "MIT",
+  "private": true
+}
