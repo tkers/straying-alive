@@ -5,6 +5,13 @@
   "main": "index.js",
   "repository": "git@github.com:tkers/ld46.git",
   "author": "Tijn Kersjes <tijn@divbyzero.nl>",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w src"
+  },
+  "devDependencies": {
+    "rollup": "^2.6.1"
+  },
   "license": "MIT",
   "private": true
 }
