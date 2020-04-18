@@ -1,3 +1,5 @@
+import { rnd, turnToDir } from "./utils";
+
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
   canvas.width = w;
@@ -32,13 +34,17 @@ export const MovementSystem = (ents, dt) =>
 
 export const WanderSystem = (ents, dt) =>
   ents.forEach(ent => {
-    ent.components.WanderComponent.timer -= dt;
-    if (ent.components.WanderComponent.timer > 0) return;
-
-    ent.components.WanderComponent.timer =
-      ent.components.WanderComponent.interval -
-      ent.components.WanderComponent.variance +
-      Math.random() * 2 * ent.components.WanderComponent.variance;
-
-    ent.components.VelocityComponent.direction = Math.random() * 360;
+    if (ent.components.WanderComponent.timer > 0) {
+      ent.components.WanderComponent.timer -= dt;
+    } else {
+      ent.components.WanderComponent.resetTimer();
+      ent.components.WanderComponent.targetDirection = rnd(360);
+    }
+    if (ent.components.WanderComponent.targetDirection !== null) {
+      ent.components.VelocityComponent.direction = turnToDir(
+        ent.components.VelocityComponent.direction,
+        ent.components.WanderComponent.targetDirection,
+        ent.components.WanderComponent.turnSpeed * dt
+      );
+    }
   });

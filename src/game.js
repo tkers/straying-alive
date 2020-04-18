@@ -6,8 +6,7 @@ import {
   WanderComponent
 } from "./components";
 import { RenderSystem, MovementSystem, WanderSystem } from "./systems";
-
-const rnd = n => Math.floor(Math.random() * n);
+import { rnd } from "./utils";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
@@ -17,7 +16,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addComponent(new PositionComponent(480, 320))
     .addComponent(new SpriteComponent(42, "#FF00FF"))
     .addComponent(new VelocityComponent(100, rnd(360)))
-    .addComponent(new WanderComponent(1, 0));
+    .addComponent(new WanderComponent(1, 0, 360));
 
   world.addSystem(
     [SpriteComponent, PositionComponent],

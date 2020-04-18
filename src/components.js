@@ -13,8 +13,17 @@ export function VelocityComponent(speed, direction) {
   this.direction = direction;
 }
 
-export function WanderComponent(interval, variance) {
+export function WanderComponent(interval, variance, turnSpeed = 180) {
   this.timer = 0;
+  this.targetDirection = null;
   this.interval = interval;
   this.variance = variance;
+  this.turnSpeed = turnSpeed;
+
+  this.resetTimer = () => {
+    this.timer =
+      this.interval - this.variance + Math.random() * 2 * this.variance;
+  };
+
+  this.resetTimer();
 }
