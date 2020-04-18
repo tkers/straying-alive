@@ -1,3 +1,5 @@
+import { hasComponent } from "./ecs";
+import { MembraneComponent } from "./components";
 import { rnd, turnToDir } from "./utils";
 
 export const RenderSystem = (canvas, w, h) => {
@@ -7,6 +9,20 @@ export const RenderSystem = (canvas, w, h) => {
 
   return ents => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
+      ctx.fillStyle = ent.components.MembraneComponent.color;
+      ctx.beginPath();
+      ctx.arc(
+        ent.components.PositionComponent.x,
+        ent.components.PositionComponent.y,
+        ent.components.SpriteComponent.size +
+          ent.components.MembraneComponent.size,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    });
 
     ents.forEach(ent => {
       ctx.fillStyle = ent.components.SpriteComponent.color;
