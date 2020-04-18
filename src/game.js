@@ -12,7 +12,7 @@ import {
   WanderSystem,
   MouseSelectionSystem
 } from "./systems";
-import { blob } from "./assemblages";
+import { base, blob } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
@@ -20,6 +20,12 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.createEntity(blob);
   world.createEntity(blob);
   world.createEntity(blob);
+  world.createEntity(blob);
+  world.createEntity(blob);
+  world.createEntity(blob);
+  world.createEntity(blob);
+
+  world.createEntity(base);
 
   world.addSystem(
     [SpriteComponent, PositionComponent],

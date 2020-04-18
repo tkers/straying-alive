@@ -8,6 +8,12 @@ import {
 } from "./components";
 import { rnd } from "./utils";
 
+export const base = ent =>
+  ent
+    .addComponent(new PositionComponent(480, 320))
+    .addComponent(new SpriteComponent(30, "#F5E4AA"))
+    .addComponent(new MembraneComponent(5, "#000"));
+
 export const blob = ent =>
   ent
     .addComponent(new PositionComponent(480, 320))
