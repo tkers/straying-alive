@@ -5,7 +5,7 @@ import {
   MembraneComponent,
   VelocityComponent,
   WanderComponent,
-  SelectableComponent
+  ControllableComponent
 } from "./components";
 import { rnd } from "./utils";
 
@@ -23,7 +23,7 @@ export const blob = ent =>
     .addComponent(new MembraneComponent(5, "#fff"))
     .addComponent(new VelocityComponent(50, rnd(360)))
     .addComponent(new WanderComponent(5, 1, 90))
-    .addComponent(new SelectableComponent());
+    .addComponent(new ControllableComponent(3600));
 
 export const enemy = ent =>
   ent

@@ -11,3 +11,9 @@ export const turnToDir = (startDir, targetDir, maxSpeed) => {
 
 export const getDistance = (x1, y1, x2, y2) =>
   Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2);
+
+export const getDirection = (startX, startY, targetX, targetY) => {
+  const dx = targetX - startX;
+  const dy = targetY - startY;
+  return (Math.atan2(dy, dx) * 180) / Math.PI;
+};

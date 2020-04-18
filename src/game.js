@@ -5,14 +5,15 @@ import {
   PositionComponent,
   VelocityComponent,
   WanderComponent,
-  SelectableComponent
+  ControllableComponent
 } from "./components";
 import {
   RenderSystem,
   SpriteFadeSystem,
   MovementSystem,
   WanderSystem,
-  MouseSelectionSystem
+  MouseSelectionSystem,
+  MouseTargetSystem
 } from "./systems";
 import { base, blob, enemy } from "./assemblages";
 
@@ -42,8 +43,12 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem([PositionComponent, VelocityComponent], MovementSystem);
   world.addSystem([VelocityComponent, WanderComponent], WanderSystem);
   world.addSystem(
-    [SelectableComponent, PositionComponent, SpriteComponent],
+    [ControllableComponent, PositionComponent, SpriteComponent],
     MouseSelectionSystem(canvas)
+  );
+  world.addSystem(
+    [ControllableComponent, PositionComponent, VelocityComponent],
+    MouseTargetSystem(canvas)
   );
 
   return world;

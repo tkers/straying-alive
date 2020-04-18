@@ -1,3 +1,5 @@
+import { rnd } from "./utils";
+
 export function PositionComponent(x, y) {
   this.x = x;
   this.y = y;
@@ -34,13 +36,14 @@ export function WanderComponent(interval, variance, turnSpeed = 180) {
   this.turnSpeed = turnSpeed;
 
   this.resetTimer = () => {
-    this.timer =
-      this.interval - this.variance + Math.random() * 2 * this.variance;
+    this.timer = this.interval + rnd(-this.variance, this.variance);
+    this.targetDirection = null;
   };
 
   this.resetTimer();
 }
 
-export function SelectableComponent(isSelected) {
-  this.isSelected = isSelected;
+export function ControllableComponent(turnSpeed) {
+  this.isSelected = false;
+  this.turnSpeed = turnSpeed;
 }

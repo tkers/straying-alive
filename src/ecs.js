@@ -39,6 +39,7 @@ export const createWorld = () => {
     };
     newEnt.addComponent = c => addComponent(newEnt, c);
     newEnt.removeComponent = c => removeComponent(newEnt, c);
+    newEnt.hasComponent = c => hasComponent(c)(newEnt);
     if (init instanceof Function) {
       init(newEnt);
     }

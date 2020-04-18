@@ -3,9 +3,9 @@ import { hasComponent } from "./ecs";
 import {
   MembraneComponent,
   SpriteFadeComponent,
-  SelectableComponent
+  ControllableComponent
 } from "./components";
-import { rnd, turnToDir, getDistance } from "./utils";
+import { rnd, turnToDir, getDistance, getDirection } from "./utils";
 
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
@@ -45,8 +45,8 @@ export const RenderSystem = (canvas, w, h) => {
     ents
       .filter(
         ent =>
-          hasComponent(SelectableComponent)(ent) &&
-          ent.components.SelectableComponent.isSelected
+          ent.hasComponent(ControllableComponent) &&
+          ent.components.ControllableComponent.isSelected
       )
       .forEach(ent => {
         ctx.strokeStyle = "#222";
@@ -79,21 +79,27 @@ export const MovementSystem = (ents, dt) =>
   });
 
 export const WanderSystem = (ents, dt) =>
-  ents.forEach(ent => {
-    if (ent.components.WanderComponent.timer > 0) {
-      ent.components.WanderComponent.timer -= dt;
-    } else {
-      ent.components.WanderComponent.resetTimer();
-      ent.components.WanderComponent.targetDirection = rnd(360);
-    }
-    if (ent.components.WanderComponent.targetDirection !== null) {
-      ent.components.VelocityComponent.direction = turnToDir(
-        ent.components.VelocityComponent.direction,
-        ent.components.WanderComponent.targetDirection,
-        ent.components.WanderComponent.turnSpeed * dt
-      );
-    }
-  });
+  ents
+    .filter(
+      ent =>
+        !ent.hasComponent(ControllableComponent) ||
+        !ent.components.ControllableComponent.isSelected
+    )
+    .forEach(ent => {
+      if (ent.components.WanderComponent.timer > 0) {
+        ent.components.WanderComponent.timer -= dt;
+      } else {
+        ent.components.WanderComponent.resetTimer();
+        ent.components.WanderComponent.targetDirection = rnd(360);
+      }
+      if (ent.components.WanderComponent.targetDirection !== null) {
+        ent.components.VelocityComponent.direction = turnToDir(
+          ent.components.VelocityComponent.direction,
+          ent.components.WanderComponent.targetDirection,
+          ent.components.WanderComponent.turnSpeed * dt
+        );
+      }
+    });
 
 export const MouseSelectionSystem = canvas => {
   let clickX = 0;
@@ -126,17 +132,46 @@ export const MouseSelectionSystem = canvas => {
       );
 
       if (clickedEnt)
-        clickedEnt.components.SelectableComponent.isSelected = true;
+        clickedEnt.components.ControllableComponent.isSelected = true;
     }
 
     if (mode === 2) {
       ents.forEach(ent => {
-        ent.components.SelectableComponent.isSelected = false;
+        ent.components.ControllableComponent.isSelected = false;
+        if (ent.components.WanderComponent) {
+          ent.components.WanderComponent.resetTimer();
+        }
       });
     }
 
     mode = 0;
   };
+};
+
+export const MouseTargetSystem = canvas => {
+  let mouseX = 0;
+  let mouseY = 0;
+  canvas.addEventListener("mousemove", e => {
+    mouseX = e.pageX - e.target.offsetLeft;
+    mouseY = e.pageY - e.target.offsetTop;
+  });
+
+  return (ents, dt) =>
+    ents
+      .filter(ent => ent.components.ControllableComponent.isSelected)
+      .forEach(ent => {
+        const targetDir = getDirection(
+          ent.components.PositionComponent.x,
+          ent.components.PositionComponent.y,
+          mouseX,
+          mouseY
+        );
+        ent.components.VelocityComponent.direction = turnToDir(
+          ent.components.VelocityComponent.direction,
+          targetDir,
+          ent.components.ControllableComponent.turnSpeed * dt
+        );
+      });
 };
 
 export const SpriteFadeSystem = (ents, dt) =>
