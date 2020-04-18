@@ -32,13 +32,16 @@ export const createWorld = () => {
     entities.push(ent);
   };
 
-  const createEntity = () => {
+  const createEntity = init => {
     const newEnt = {
       id: ++_entn,
       components: {}
     };
     newEnt.addComponent = c => addComponent(newEnt, c);
     newEnt.removeComponent = c => removeComponent(newEnt, c);
+    if (init instanceof Function) {
+      init(newEnt);
+    }
     addEntity(newEnt);
     return newEnt;
   };

@@ -6,17 +6,14 @@ import {
   WanderComponent
 } from "./components";
 import { RenderSystem, MovementSystem, WanderSystem } from "./systems";
-import { rnd } from "./utils";
+import { blob } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
 
-  world
-    .createEntity()
-    .addComponent(new PositionComponent(480, 320))
-    .addComponent(new SpriteComponent(42, "#FF00FF"))
-    .addComponent(new VelocityComponent(100, rnd(360)))
-    .addComponent(new WanderComponent(1, 0, 360));
+  world.createEntity(blob);
+  world.createEntity(blob);
+  world.createEntity(blob);
 
   world.addSystem(
     [SpriteComponent, PositionComponent],
