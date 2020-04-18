@@ -29,3 +29,16 @@ export const MovementSystem = (ents, dt) =>
     ent.components.PositionComponent.y +=
       Math.sin(r) * ent.components.VelocityComponent.speed * dt;
   });
+
+export const WanderSystem = (ents, dt) =>
+  ents.forEach(ent => {
+    ent.components.WanderComponent.timer -= dt;
+    if (ent.components.WanderComponent.timer > 0) return;
+
+    ent.components.WanderComponent.timer =
+      ent.components.WanderComponent.interval -
+      ent.components.WanderComponent.variance +
+      Math.random() * 2 * ent.components.WanderComponent.variance;
+
+    ent.components.VelocityComponent.direction = Math.random() * 360;
+  });

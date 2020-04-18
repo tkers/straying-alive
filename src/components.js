@@ -12,3 +12,9 @@ export function VelocityComponent(speed, direction) {
   this.speed = speed;
   this.direction = direction;
 }
+
+export function WanderComponent(interval, variance) {
+  this.timer = 0;
+  this.interval = interval;
+  this.variance = variance;
+}
