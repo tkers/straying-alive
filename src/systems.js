@@ -230,3 +230,11 @@ export const SpawnSystem = world => (ents, dt) =>
       world.createEntity(ent.components.SpawnComponent.assemblage);
     }
   });
+
+export const CullingSystem = (minX, minY, maxX, maxY) => ents =>
+  ents.forEach(ent => {
+    const { x, y } = ent.components.PositionComponent;
+    if (x < minX || x > maxX || y < minY || y > maxY) {
+      ent.destroy();
+    }
+  });

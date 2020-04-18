@@ -55,6 +55,16 @@ export const createWorld = () => {
     entities.push(ent);
   };
 
+  const removeEntity = ent => {
+    const ix = entities.indexOf(ent);
+    if (ix > -1) {
+      entities.splice(ix, 1);
+    }
+    systems.forEach(
+      sys => (sys.entities = sys.entities.filter(e => e !== ent))
+    );
+  };
+
   const createEntity = init => {
     const newEnt = {
       id: ++_entn,
@@ -67,6 +77,7 @@ export const createWorld = () => {
     newEnt.addTag = t => addTag(newEnt, t);
     newEnt.removeTag = t => removeTag(newEnt, t);
     newEnt.hasTag = t => hasTag(t)(newEnt);
+    newEnt.destroy = () => removeEntity(newEnt);
     if (init instanceof Function) {
       init(newEnt);
     }
@@ -81,6 +92,14 @@ export const createWorld = () => {
       fn
     };
     systems.push(newSys);
+    return newSys;
+  };
+
+  const removeSystem = sys => {
+    const ix = systems.indexOf(sys);
+    if (ix > -1) {
+      systems.splice(ix, 1);
+    }
   };
 
   const update = ctx => {

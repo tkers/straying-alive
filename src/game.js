@@ -16,7 +16,8 @@ import {
   MouseSelectionSystem,
   MouseTargetSystem,
   NomSystem,
-  SpawnSystem
+  SpawnSystem,
+  CullingSystem
 } from "./systems";
 import { base, blob, enemy } from "./assemblages";
 
@@ -55,5 +56,9 @@ export const createGame = (canvas, w = 960, h = 640) => {
   );
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
   world.addSystem([SpawnComponent], SpawnSystem(world));
+  world.addSystem(
+    [PositionComponent],
+    CullingSystem(-50, -50, canvas.width + 50, canvas.height + 50)
+  );
   return world;
 };
