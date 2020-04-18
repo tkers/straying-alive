@@ -20,3 +20,12 @@ export const RenderSystem = (canvas, w, h) => {
     });
   };
 };
+
+export const MovementSystem = (ents, dt) =>
+  ents.forEach(ent => {
+    const r = (ent.components.VelocityComponent.direction * Math.PI) / 180;
+    ent.components.PositionComponent.x +=
+      Math.cos(r) * ent.components.VelocityComponent.speed * dt;
+    ent.components.PositionComponent.y +=
+      Math.sin(r) * ent.components.VelocityComponent.speed * dt;
+  });
