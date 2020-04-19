@@ -196,13 +196,16 @@ export const MouseSelectionSystem = canvas => {
           ) <= ent.components.SpriteComponent.size
       );
 
-      if (clickedEnt)
+      if (clickedEnt) {
         clickedEnt.components.ControllableComponent.isSelected = true;
+        clickedEnt.components.ControllableComponent.mouse = true;
+      }
     }
 
     if (mode === 2) {
       ents.forEach(ent => {
         ent.components.ControllableComponent.isSelected = false;
+        ent.components.ControllableComponent.mouse = false;
         ent.components.VelocityComponent.acceleration =
           ent.components.VelocityComponent.maxSpeed;
         if (ent.components.WanderComponent) {
@@ -225,7 +228,11 @@ export const MouseTargetSystem = canvas => {
 
   return (ents, dt) =>
     ents
-      .filter(ent => ent.components.ControllableComponent.isSelected)
+      .filter(
+        ent =>
+          ent.components.ControllableComponent.isSelected &&
+          ent.components.ControllableComponent.mouse
+      )
       .forEach(ent => {
         const dist = getDistance(
           ent.components.PositionComponent.x,

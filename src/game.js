@@ -25,6 +25,7 @@ import {
   CullingSystem,
   ScoreSystem
 } from "./systems";
+import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
@@ -59,6 +60,16 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem(
     [ControllableComponent, PositionComponent, VelocityComponent],
     MouseTargetSystem(canvas)
+  );
+
+  // touch control
+  world.addSystem(
+    [ControllableComponent, PositionComponent, SpriteComponent],
+    FingerSelectionSystem(canvas)
+  );
+  world.addSystem(
+    [ControllableComponent, PositionComponent, VelocityComponent],
+    FingerTargetSystem(canvas)
   );
 
   // collisions
