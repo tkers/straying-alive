@@ -6,6 +6,7 @@ import {
   VelocityComponent,
   WanderComponent,
   ControllableComponent,
+  DecayComponent,
   TimedSpawnComponent,
   HungrySpawnComponent,
   ScoreComponent
@@ -68,6 +69,7 @@ export const food = parent => ent =>
     .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(1)))
     .addComponent(new MembraneComponent(3, "#fff"))
     .addComponent(new VelocityComponent(FOOD_SPD, rnd(360)))
+    .addComponent(new DecayComponent(5, 10))
     .addComponent(
       new WanderComponent({
         interval: 40 / FOOD_SPD + 5,
