@@ -8,6 +8,7 @@ import {
   DecayComponent,
   ControllableComponent,
   TimedSpawnComponent,
+  HungrySpawnComponent,
   ScoreComponent
 } from "./components";
 import {
@@ -385,7 +386,7 @@ export const BadNomSystem = (ents, dt) => {
     base.addComponent(
       new SpriteFadeComponent(enemy.components.SpriteComponent.color, 10)
     );
-    base.removeComponent(TimedSpawnComponent);
+    base.removeComponent(HungrySpawnComponent);
     base.removeTag("base");
   });
 };
