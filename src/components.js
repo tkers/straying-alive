@@ -82,9 +82,15 @@ export function ControllableComponent(turnSpeed) {
   this.turnSpeed = turnSpeed;
 }
 
-export function SpawnComponent(assemblage, interval, variance) {
+export function TimedSpawnComponent(assemblage, interval, variance) {
   this.interval = makeInterval(interval, variance);
   this.assemblage = assemblage;
+}
+
+export function HungrySpawnComponent(assemblage, required) {
+  this.required = required;
+  this.assemblage = assemblage;
+  this.food = 0;
 }
 
 export function ScoreComponent() {

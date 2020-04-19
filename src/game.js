@@ -6,7 +6,8 @@ import {
   VelocityComponent,
   WanderComponent,
   ControllableComponent,
-  SpawnComponent,
+  TimedSpawnComponent,
+  HungrySpawnComponent,
   ScoreComponent
 } from "./components";
 import {
@@ -16,9 +17,11 @@ import {
   WanderSystem,
   MouseSelectionSystem,
   MouseTargetSystem,
+  FoodNomSystem,
   NomSystem,
   BadNomSystem,
-  SpawnSystem,
+  TimedSpawnSystem,
+  HungrySpawnSystem,
   CullingSystem,
   ScoreSystem
 } from "./systems";
@@ -27,14 +30,14 @@ import { base, enemyBase, blob, food } from "./assemblages";
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
 
-  world.createEntity(base);
+  const hq = world.createEntity(base);
   world.createEntity(enemyBase);
 
   world.createEntity(blob);
   world.createEntity(blob);
   world.createEntity(blob);
 
-  world.createEntity().addComponent(new SpawnComponent(food, 1, 1));
+  world.createEntity().addComponent(new TimedSpawnComponent(food, 1, 1));
 
   // visuals
   world.addSystem(
@@ -62,11 +65,13 @@ export const createGame = (canvas, w = 960, h = 640) => {
   );
 
   // collisions
+  world.addSystem([PositionComponent, SpriteComponent], FoodNomSystem(hq));
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
   world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
 
   // game flow
-  world.addSystem([SpawnComponent], SpawnSystem(world));
+  world.addSystem([TimedSpawnComponent], TimedSpawnSystem(world));
+  world.addSystem([HungrySpawnComponent], HungrySpawnSystem(world));
   world.addSystem([ScoreComponent], ScoreSystem);
 
   return world;

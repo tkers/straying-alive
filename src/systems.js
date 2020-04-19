@@ -4,7 +4,7 @@ import {
   MembraneComponent,
   SpriteFadeComponent,
   ControllableComponent,
-  SpawnComponent,
+  TimedSpawnComponent,
   ScoreComponent
 } from "./components";
 import {
@@ -271,6 +271,24 @@ export const SpriteFadeSystem = (ents, dt) =>
     }
   });
 
+export const FoodNomSystem = base => (ents, dt) => {
+  const n = combinations(ents, hasTag("blob"), hasTag("food"));
+  n.filter(
+    ([blob, food]) =>
+      getDistance(
+        blob.components.PositionComponent.x,
+        blob.components.PositionComponent.y,
+        food.components.PositionComponent.x,
+        food.components.PositionComponent.y
+      ) <
+      blob.components.SpriteComponent.size -
+        food.components.SpriteComponent.size
+  ).forEach(([blob, food]) => {
+    food.destroy();
+    base.components.HungrySpawnComponent.food++;
+  });
+};
+
 export const NomSystem = (ents, dt) => {
   const n = combinations(ents, hasTag("blob"), hasTag("enemy"));
   n.filter(
@@ -307,15 +325,27 @@ export const BadNomSystem = (ents, dt) => {
     enemy.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
     enemy.removeTag("enemy");
     base.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
-    base.removeComponent(SpawnComponent);
+    base.removeComponent(TimedSpawnComponent);
     base.removeTag("base");
   });
 };
 
-export const SpawnSystem = world => (ents, dt) =>
+export const TimedSpawnSystem = world => (ents, dt) =>
   ents.forEach(ent => {
-    if (ent.components.SpawnComponent.interval(dt)) {
-      world.createEntity(ent.components.SpawnComponent.assemblage);
+    if (ent.components.TimedSpawnComponent.interval(dt)) {
+      world.createEntity(ent.components.TimedSpawnComponent.assemblage);
+    }
+  });
+
+export const HungrySpawnSystem = world => (ents, dt) =>
+  ents.forEach(ent => {
+    if (
+      ent.components.HungrySpawnComponent.food >=
+      ent.components.HungrySpawnComponent.required
+    ) {
+      ent.components.HungrySpawnComponent.food -=
+        ent.components.HungrySpawnComponent.required;
+      world.createEntity(ent.components.HungrySpawnComponent.assemblage);
     }
   });
 

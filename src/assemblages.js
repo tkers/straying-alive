@@ -6,7 +6,8 @@ import {
   VelocityComponent,
   WanderComponent,
   ControllableComponent,
-  SpawnComponent,
+  TimedSpawnComponent,
+  HungrySpawnComponent,
   ScoreComponent
 } from "./components";
 import { rnd, choose, getDirection } from "./utils";
@@ -34,9 +35,10 @@ export const blob = ent =>
 
 export const food = ent =>
   ent
+    .addTag("food")
     .addComponent(new PositionComponent(480, 320))
     .addComponent(new SpriteComponent(FOOD_RAD, "#F5E4AA"))
-    .addComponent(new SpriteFadeComponent("#f5aadf", 5, FOOD_TIM + rnd(0.5)))
+    .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(0.5)))
     .addComponent(new MembraneComponent(2, "#fff"))
     .addComponent(new VelocityComponent(FOOD_SPD, rnd(360)))
     .addComponent(
@@ -54,7 +56,7 @@ export const base = ent =>
     .addComponent(new PositionComponent(480, 320))
     .addComponent(new SpriteComponent(BASE_RAD, "#f5e4aa"))
     .addComponent(new MembraneComponent(5, "#fff"))
-    .addComponent(new SpawnComponent(blob, 5, 1));
+    .addComponent(new HungrySpawnComponent(blob, 5));
 
 const W = 960;
 const H = 640;
@@ -87,4 +89,4 @@ export const enemy = ent => {
 };
 
 export const enemyBase = ent =>
-  ent.addComponent(new SpawnComponent(enemy, 5, 1));
+  ent.addComponent(new TimedSpawnComponent(enemy, 5, 1));
