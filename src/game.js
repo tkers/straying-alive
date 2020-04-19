@@ -37,8 +37,6 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.createEntity(blob);
   world.createEntity(blob);
 
-  world.createEntity().addComponent(new TimedSpawnComponent(food, 1, 1));
-
   // visuals
   world.addSystem(
     [SpriteComponent, PositionComponent],

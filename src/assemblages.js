@@ -16,9 +16,11 @@ const BASE_RAD = 30;
 const BLOB_RAD = 20;
 const BLOB_SPD = 60;
 const BLOB_TIM = (BASE_RAD + BLOB_RAD) / BLOB_SPD;
+const ENEMY_RAD = 15;
+const ENEMY_SPD = 90;
 const FOOD_SPD = 20;
 const FOOD_RAD = 5;
-const FOOD_TIM = (BASE_RAD + FOOD_RAD) / FOOD_SPD;
+const FOOD_TIM = (ENEMY_RAD + FOOD_RAD) / (FOOD_SPD + ENEMY_SPD);
 
 export const blob = ent =>
   ent
@@ -33,13 +35,18 @@ export const blob = ent =>
     )
     .addComponent(new ControllableComponent(3600));
 
-export const food = ent =>
+export const food = parent => ent =>
   ent
     .addTag("food")
-    .addComponent(new PositionComponent(480, 320))
-    .addComponent(new SpriteComponent(FOOD_RAD, "#F5E4AA"))
-    .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(0.5)))
-    .addComponent(new MembraneComponent(2, "#fff"))
+    .addComponent(
+      new PositionComponent(
+        parent.components.PositionComponent.x,
+        parent.components.PositionComponent.y
+      )
+    )
+    .addComponent(new SpriteComponent(FOOD_RAD, "#DA7783"))
+    .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(1)))
+    .addComponent(new MembraneComponent(3, "#fff"))
     .addComponent(new VelocityComponent(FOOD_SPD, rnd(360)))
     .addComponent(
       new WanderComponent({
@@ -75,8 +82,8 @@ export const enemy = ent => {
   ent
     .addTag("enemy")
     .addComponent(position)
-    .addComponent(new VelocityComponent(90, direction))
-    .addComponent(new SpriteComponent(15, "#DA7783"))
+    .addComponent(new VelocityComponent(ENEMY_SPD, direction))
+    .addComponent(new SpriteComponent(ENEMY_RAD, "#DA7783"))
     .addComponent(new MembraneComponent(5, "#fff"))
     .addComponent(
       new WanderComponent({
@@ -85,7 +92,8 @@ export const enemy = ent => {
         turnSpeed: 360,
         directionVar: 45
       })
-    );
+    )
+    .addComponent(new TimedSpawnComponent(food(ent), 1, 1));
 };
 
 export const enemyBase = ent =>
