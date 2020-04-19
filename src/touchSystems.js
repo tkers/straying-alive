@@ -1,3 +1,4 @@
+import { ControllableComponent } from "./components";
 import { getDistance, getDirection, turnToDir } from "./utils";
 
 const copyTouch = ({ identifier, pageX, pageY, target }) => ({
@@ -92,6 +93,8 @@ export const FingerSelectionSystem = canvas => {
     endedTouches.forEach(t => {
       const ent = t.entity;
       delete touchMap[ent];
+      if (!ent.hasComponent(ControllableComponent)) return;
+
       ent.components.ControllableComponent.isSelected = false;
       ent.components.ControllableComponent.finger = false;
       ent.components.VelocityComponent.acceleration =
@@ -125,6 +128,7 @@ export const FingerTargetSystem = canvas => {
     ents
       .filter(
         ent =>
+          ent.hasComponent(ControllableComponent) &&
           ent.components.ControllableComponent.isSelected &&
           ent.components.ControllableComponent.finger
       )
