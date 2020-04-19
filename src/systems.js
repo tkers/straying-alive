@@ -346,7 +346,6 @@ export const NomSystem = (ents, dt) => {
         enemy.components.PositionComponent.y) /
       2;
 
-    console.log("colide", blob, enemy);
     enemy.removeTag("enemy");
     enemy.removeComponent(TimedSpawnComponent);
     enemy.removeComponent(WanderComponent);
