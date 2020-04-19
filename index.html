@@ -21,9 +21,37 @@
         box-shadow: 0 2px 8px #000;
         border-radius: 2px;
       }
+      footer {
+        margin-top: 20px;
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 500px;
+        background-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 #000 inset;
+        font-family: sans-serif;
+        color: #888;
+        font-size: 12px;
+        cursor: default;
+      }
+      footer b {
+        color: #000;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+        margin: 0 4px;
+      }
+      footer a {
+        color: #26a;
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: #27d;
+      }
     </style>
   </head>
   <body>
-    <canvas id="root"></canvas>
+    <main><canvas id="root"></canvas></main>
+    <footer>
+      Ludum Dare 46 <b>&bull;</b>
+      <a href="https://github.com/tkers/ld46">source</a>
+    </footer>
   </body>
 </html>
