@@ -24,33 +24,7 @@ export const RenderSystem = (canvas, w, h) => {
   return (ents, dt) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
-      ctx.fillStyle = ent.components.MembraneComponent.color;
-      ctx.beginPath();
-      ctx.arc(
-        ent.components.PositionComponent.x,
-        ent.components.PositionComponent.y,
-        ent.components.SpriteComponent.size +
-          ent.components.MembraneComponent.size,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-    });
-
-    ents.forEach(ent => {
-      ctx.fillStyle = ent.components.SpriteComponent.color;
-      ctx.beginPath();
-      ctx.arc(
-        ent.components.PositionComponent.x,
-        ent.components.PositionComponent.y,
-        ent.components.SpriteComponent.size,
-        0,
-        Math.PI * 2
-      );
-      ctx.fill();
-    });
-
+    // selection dashes
     t = (t + (dt * Math.PI) / 3.5) % (Math.PI * 2);
     ents
       .filter(
@@ -77,6 +51,36 @@ export const RenderSystem = (canvas, w, h) => {
         ctx.setLineDash([]);
       });
 
+    // membrane circle
+    ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
+      ctx.fillStyle = ent.components.MembraneComponent.color;
+      ctx.beginPath();
+      ctx.arc(
+        ent.components.PositionComponent.x,
+        ent.components.PositionComponent.y,
+        ent.components.SpriteComponent.size +
+          ent.components.MembraneComponent.size,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    });
+
+    // core circle
+    ents.forEach(ent => {
+      ctx.fillStyle = ent.components.SpriteComponent.color;
+      ctx.beginPath();
+      ctx.arc(
+        ent.components.PositionComponent.x,
+        ent.components.PositionComponent.y,
+        ent.components.SpriteComponent.size,
+        0,
+        Math.PI * 2
+      );
+      ctx.fill();
+    });
+
+    // score
     ents.filter(hasComponent(ScoreComponent)).forEach(ent => {
       const score = ent.components.ScoreComponent.score;
       const text = `Time ${Math.floor(score / 60)}:${Math.floor(score % 60)
