@@ -376,9 +376,9 @@ export const BadNomSystem = (ents, dt) => {
       enemy.components.SpriteComponent.size +
         base.components.SpriteComponent.size
   ).forEach(([enemy, base]) => {
-    enemy.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
-    enemy.removeTag("enemy");
-    base.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
+    base.addComponent(
+      new SpriteFadeComponent(enemy.components.SpriteComponent.color, 10)
+    );
     base.removeComponent(TimedSpawnComponent);
     base.removeTag("base");
   });
