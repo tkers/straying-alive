@@ -22,7 +22,7 @@ import {
   CullingSystem,
   ScoreSystem
 } from "./systems";
-import { base, enemyBase, blob } from "./assemblages";
+import { base, enemyBase, blob, food } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
@@ -33,6 +33,8 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.createEntity(blob);
   world.createEntity(blob);
   world.createEntity(blob);
+
+  world.createEntity().addComponent(new SpawnComponent(food, 1, 1));
 
   // visuals
   world.addSystem(
