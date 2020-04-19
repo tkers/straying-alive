@@ -15,12 +15,11 @@ import {
   wrapDir,
   combinations
 } from "./utils";
+import { resizeCanvas } from "./canvas";
 
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
-  canvas.width = w;
-  canvas.height = h;
-
+  resizeCanvas(canvas, w, h);
   return ents => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
