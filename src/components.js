@@ -137,8 +137,3 @@ export function HungrySpawnComponent(assemblage, required) {
   this.assemblage = assemblage;
   this.food = 0;
 }
-
-export function ScoreComponent() {
-  this.score = 0;
-  this.gameover = false;
-}

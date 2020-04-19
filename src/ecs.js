@@ -7,6 +7,7 @@ export const hasTag = hasComponent;
 export const createWorld = () => {
   const entities = [];
   const systems = [];
+  const listeners = {};
   let _entn = 0;
 
   const addEntityToSystems = ent => {
@@ -46,6 +47,8 @@ export const createWorld = () => {
     ent.added && removeEntityFromSystems(ent);
     return ent;
   };
+
+  const getEntities = q => (q ? entities.filter(hasComponent(q)) : entities);
 
   const addEntity = ent => {
     ent.added = true;
@@ -102,6 +105,22 @@ export const createWorld = () => {
     }
   };
 
+  const addListener = (name, fn) => {
+    if (!listeners[name]) {
+      listeners[name] = [];
+    }
+    listeners[name].push(fn);
+  };
+
+  const emit = (name, ...data) => {
+    if (listeners[name]) {
+      listeners[name].forEach(fn => fn(...data));
+      return listeners[name].length;
+    } else {
+      return 0;
+    }
+  };
+
   const update = ctx => {
     systems.forEach(sys => sys.fn(sys.entities, ctx));
   };
@@ -109,6 +128,8 @@ export const createWorld = () => {
   return {
     createEntity,
     addSystem,
+    on: addListener,
+    emit,
     update
   };
 };

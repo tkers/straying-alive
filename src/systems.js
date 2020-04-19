@@ -9,8 +9,7 @@ import {
   ControllableComponent,
   TimedSpawnComponent,
   BucketSpawnComponent,
-  HungrySpawnComponent,
-  ScoreComponent
+  HungrySpawnComponent
 } from "./components";
 import {
   rnd,
@@ -24,7 +23,7 @@ import {
 import { resizeCanvas } from "./canvas";
 
 let t = 0;
-export const RenderSystem = (canvas, w, h) => {
+export const RenderSystem = (canvas, w, h, globalState) => {
   const ctx = canvas.getContext("2d");
   resizeCanvas(canvas, w, h);
   return (ents, dt) => {
@@ -93,35 +92,19 @@ export const RenderSystem = (canvas, w, h) => {
     });
 
     // score
-    ents.filter(hasComponent(ScoreComponent)).forEach(ent => {
-      const score = ent.components.ScoreComponent.score;
-      const text = `Time ${Math.floor(score / 60)}:${Math.floor(score % 60)
-        .toString()
-        .padStart(2, "0")}`;
+    const text = `${globalState.score.toString().padStart(5, "0")} points`;
 
-      ctx.font = "16px sans-serif";
-      ctx.textAlign = "left";
-      ctx.textBaseline = "top";
+    ctx.font = "16px sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
 
-      ctx.strokeStyle = "#FFFFFF";
-      ctx.lineWidth = 2;
-      ctx.strokeText(text, 8, 8);
-      ctx.fillStyle = ent.components.ScoreComponent.gameover
-        ? "#DD0000"
-        : "#000000";
-      ctx.fillText(text, 8, 8);
-    });
+    ctx.strokeStyle = "#FFFFFF";
+    ctx.lineWidth = 3;
+    ctx.strokeText(text, 8, 8);
+    ctx.fillStyle = "#000000";
+    ctx.fillText(text, 8, 8);
   };
 };
-
-export const ScoreSystem = (ents, dt) =>
-  ents.forEach(ent => {
-    if (ent.hasTag("base")) {
-      ent.components.ScoreComponent.score += dt;
-    } else {
-      ent.components.ScoreComponent.gameover = true;
-    }
-  });
 
 export const MovementSystem = (ents, dt) =>
   ents.forEach(ent => {
@@ -315,7 +298,7 @@ export const SpriteFadeSystem = (ents, dt) =>
     }
   });
 
-export const FoodNomSystem = base => (ents, dt) => {
+export const FoodNomSystem = (world, base) => (ents, dt) => {
   const n = combinations(ents, hasTag("blob"), hasTag("food"));
   n.filter(
     ([blob, food]) =>
@@ -330,6 +313,7 @@ export const FoodNomSystem = base => (ents, dt) => {
   ).forEach(([blob, food]) => {
     food.destroy();
     base.components.HungrySpawnComponent.food++;
+    world.emit("eat-food");
   });
 };
 
@@ -387,7 +371,6 @@ export const BadNomSystem = (ents, dt) => {
     base.addComponent(
       new SpriteFadeComponent(enemy.components.SpriteComponent.color, 10)
     );
-    base.removeComponent(HungrySpawnComponent);
     base.removeTag("base");
   });
 };

@@ -9,8 +9,7 @@ import {
   DecayComponent,
   TimedSpawnComponent,
   BucketSpawnComponent,
-  HungrySpawnComponent,
-  ScoreComponent
+  HungrySpawnComponent
 } from "./components";
 import { rnd, choose, getDirection } from "./utils";
 
@@ -51,7 +50,6 @@ export const blob = parent => ent =>
 export const base = ent =>
   ent
     .addTag("base")
-    .addComponent(new ScoreComponent())
     .addComponent(new PositionComponent(WIDTH / 2, HEIGHT / 2))
     .addComponent(new SpriteComponent(BASE_RAD, "#f5e4aa"))
     .addComponent(new MembraneComponent(5, "#fff"))

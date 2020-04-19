@@ -10,8 +10,7 @@ import {
   ControllableComponent,
   TimedSpawnComponent,
   BucketSpawnComponent,
-  HungrySpawnComponent,
-  ScoreComponent
+  HungrySpawnComponent
 } from "./components";
 import {
   RenderSystem,
@@ -28,13 +27,13 @@ import {
   TimedSpawnSystem,
   BucketSpawnSystem,
   HungrySpawnSystem,
-  CullingSystem,
-  ScoreSystem
+  CullingSystem
 } from "./systems";
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
+  const globalState = { score: 0 };
   const world = createWorld();
 
   const hq = world.createEntity(base);
@@ -63,7 +62,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   // visuals
   world.addSystem(
     [SpriteComponent, PositionComponent],
-    RenderSystem(canvas, w, h)
+    RenderSystem(canvas, w, h, globalState)
   );
   world.addSystem([SpriteComponent, SpriteFadeComponent], SpriteFadeSystem);
 
@@ -79,7 +78,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     TargetSystem
   );
 
-  // control
+  // mouse input
   world.addSystem(
     [ControllableComponent, PositionComponent, SpriteComponent],
     MouseSelectionSystem(canvas)
@@ -89,7 +88,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     MouseTargetSystem(canvas)
   );
 
-  // touch control
+  // touch input
   world.addSystem(
     [ControllableComponent, PositionComponent, SpriteComponent],
     FingerSelectionSystem(canvas)
@@ -100,7 +99,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
   );
 
   // collisions
-  world.addSystem([PositionComponent, SpriteComponent], FoodNomSystem(hq));
+  world.addSystem(
+    [PositionComponent, SpriteComponent],
+    FoodNomSystem(world, hq)
+  );
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
   world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
   world.addSystem([DecayComponent], DecaySystem);
@@ -109,7 +111,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem([TimedSpawnComponent], TimedSpawnSystem(world));
   world.addSystem([BucketSpawnComponent], BucketSpawnSystem(world));
   world.addSystem([HungrySpawnComponent], HungrySpawnSystem(world));
-  world.addSystem([ScoreComponent], ScoreSystem);
+
+  world.on("eat-food", () => {
+    globalState.score += 10;
+  });
 
   return world;
 };
