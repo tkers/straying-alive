@@ -73,7 +73,7 @@ export const food = parent => ent =>
       })
     );
 
-export const enemy = ent => {
+export const enemy = target => ent => {
   const position = choose([
     new PositionComponent(-20, rnd(HEIGHT)),
     new PositionComponent(WIDTH + 20, rnd(HEIGHT)),
@@ -82,7 +82,12 @@ export const enemy = ent => {
   ]);
 
   const direction =
-    getDirection(position.x, position.y, WIDTH / 2, HEIGHT / 2) + rnd(-30, 30);
+    getDirection(
+      position.x,
+      position.y,
+      target.components.PositionComponent.x,
+      target.components.PositionComponent.y
+    ) + rnd(-30, 30);
 
   ent
     .addTag("enemy")
@@ -101,5 +106,5 @@ export const enemy = ent => {
     .addComponent(new TimedSpawnComponent(food(ent), 1, 1));
 };
 
-export const enemyBase = ent =>
-  ent.addComponent(new TimedSpawnComponent(enemy, 5, 1));
+export const enemyBase = target => ent =>
+  ent.addComponent(new TimedSpawnComponent(enemy(target), 5, 1));

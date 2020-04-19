@@ -31,7 +31,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
 
   const hq = world.createEntity(base);
-  world.createEntity(enemyBase);
+  world.createEntity(enemyBase(hq));
 
   world.createEntity(blob(hq));
   world.createEntity(blob(hq));
