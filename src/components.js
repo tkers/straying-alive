@@ -86,3 +86,8 @@ export function SpawnComponent(assemblage, interval, variance) {
   this.interval = makeInterval(interval, variance);
   this.assemblage = assemblage;
 }
+
+export function ScoreComponent() {
+  this.score = 0;
+  this.gameover = false;
+}

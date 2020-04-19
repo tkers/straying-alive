@@ -6,7 +6,8 @@ import {
   VelocityComponent,
   WanderComponent,
   ControllableComponent,
-  SpawnComponent
+  SpawnComponent,
+  ScoreComponent
 } from "./components";
 import { rnd, choose, getDirection } from "./utils";
 
@@ -26,6 +27,7 @@ export const blob = ent =>
 export const base = ent =>
   ent
     .addTag("base")
+    .addComponent(new ScoreComponent())
     .addComponent(new PositionComponent(480, 320))
     .addComponent(new SpriteComponent(30, "#F5E4AA"))
     .addComponent(new MembraneComponent(5, "#fff"))
@@ -49,8 +51,7 @@ export const enemy = ent => {
     .addTag("enemy")
     .addComponent(position)
     .addComponent(new VelocityComponent(90, direction))
-    .addComponent(new SpriteComponent(15, "#F5E4AA"))
-    .addComponent(new SpriteFadeComponent("#DA7783", 3, rnd(0.5, 1)))
+    .addComponent(new SpriteComponent(15, "#DA7783"))
     .addComponent(new MembraneComponent(5, "#fff"))
     .addComponent(
       new WanderComponent({

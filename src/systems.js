@@ -4,7 +4,8 @@ import {
   MembraneComponent,
   SpriteFadeComponent,
   ControllableComponent,
-  SpawnComponent
+  SpawnComponent,
+  ScoreComponent
 } from "./components";
 import {
   rnd,
@@ -74,8 +75,34 @@ export const RenderSystem = (canvas, w, h) => {
         ctx.stroke();
         ctx.setLineDash([]);
       });
+
+    ents.filter(hasComponent(ScoreComponent)).forEach(ent => {
+      ctx.fillStyle = ent.components.ScoreComponent.gameover
+        ? "#DD0000"
+        : "#000000";
+      ctx.font = "16px sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      const score = ent.components.ScoreComponent.score;
+      ctx.fillText(
+        `Time ${Math.floor(score / 60)}:${Math.floor(score % 60)
+          .toString()
+          .padStart(2, "0")}`,
+        8,
+        8
+      );
+    });
   };
 };
+
+export const ScoreSystem = (ents, dt) =>
+  ents.forEach(ent => {
+    if (ent.hasTag("base")) {
+      ent.components.ScoreComponent.score += dt;
+    } else {
+      ent.components.ScoreComponent.gameover = true;
+    }
+  });
 
 export const MovementSystem = (ents, dt) =>
   ents.forEach(ent => {
@@ -270,9 +297,9 @@ export const BadNomSystem = (ents, dt) => {
       enemy.components.SpriteComponent.size +
         base.components.SpriteComponent.size
   ).forEach(([enemy, base]) => {
-    enemy.addComponent(new SpriteFadeComponent("#AAAAAA", 1));
+    enemy.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
     enemy.removeTag("enemy");
-    base.addComponent(new SpriteFadeComponent("#AAAAAA", 1));
+    base.addComponent(new SpriteFadeComponent("#bbbbbb", 10));
     base.removeComponent(SpawnComponent);
     base.removeTag("base");
   });
