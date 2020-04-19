@@ -2,8 +2,10 @@ import chroma from "chroma-js";
 import { hasComponent, hasTag } from "./ecs";
 import {
   TargetComponent,
+  WanderComponent,
   MembraneComponent,
   SpriteFadeComponent,
+  DecayComponent,
   ControllableComponent,
   TimedSpawnComponent,
   ScoreComponent
@@ -54,6 +56,9 @@ export const RenderSystem = (canvas, w, h) => {
 
     // membrane circle
     ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
+      ctx.globalAlpha = ent.hasComponent(DecayComponent)
+        ? ent.components.DecayComponent.life
+        : 1;
       ctx.fillStyle = ent.components.MembraneComponent.color;
       ctx.beginPath();
       ctx.arc(
@@ -69,6 +74,9 @@ export const RenderSystem = (canvas, w, h) => {
 
     // core circle
     ents.forEach(ent => {
+      ctx.globalAlpha = ent.hasComponent(DecayComponent)
+        ? ent.components.DecayComponent.life
+        : 1;
       ctx.fillStyle = ent.components.SpriteComponent.color;
       ctx.beginPath();
       ctx.arc(
@@ -114,11 +122,14 @@ export const ScoreSystem = (ents, dt) =>
 
 export const MovementSystem = (ents, dt) =>
   ents.forEach(ent => {
+    // update position
     const r = (ent.components.VelocityComponent.direction * Math.PI) / 180;
     ent.components.PositionComponent.x +=
       Math.cos(r) * ent.components.VelocityComponent.speed * dt;
     ent.components.PositionComponent.y +=
       Math.sin(r) * ent.components.VelocityComponent.speed * dt;
+
+    // accelerate
     const ds =
       ent.components.VelocityComponent.maxSpeed -
       ent.components.VelocityComponent.speed;
@@ -326,10 +337,29 @@ export const NomSystem = (ents, dt) => {
       blob.components.SpriteComponent.size +
         enemy.components.SpriteComponent.size
   ).forEach(([blob, enemy]) => {
+    const midX =
+      (blob.components.PositionComponent.x +
+        enemy.components.PositionComponent.x) /
+      2;
+    const midY =
+      (blob.components.PositionComponent.y +
+        enemy.components.PositionComponent.y) /
+      2;
+
+    console.log("colide", blob, enemy);
     enemy.removeTag("enemy");
-    enemy.addTag("blob");
-    enemy.addComponent(new SpriteFadeComponent("#7ACCAF", 100));
-    enemy.addComponent(new ControllableComponent(3600));
+    enemy.removeComponent(TimedSpawnComponent);
+    enemy.removeComponent(WanderComponent);
+    enemy.addComponent(new TargetComponent(midX, midY));
+    enemy.addComponent(new SpriteFadeComponent("#f6e5f5", 5));
+    enemy.addComponent(new DecayComponent(4, 0.5));
+
+    blob.removeTag("blob");
+    blob.removeComponent(ControllableComponent);
+    blob.removeComponent(WanderComponent);
+    blob.addComponent(new TargetComponent(midX, midY));
+    blob.addComponent(new SpriteFadeComponent("#f6e5f5", 5));
+    blob.addComponent(new DecayComponent(4, 0.5));
   });
 };
 
