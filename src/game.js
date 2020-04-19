@@ -30,7 +30,7 @@ import {
   ScoreSystem
 } from "./systems";
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
-import { base, enemyBase, blob, food } from "./assemblages";
+import { base, enemyBase, blob, food, enemy } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
@@ -40,6 +40,23 @@ export const createGame = (canvas, w = 960, h = 640) => {
   setTimeout(() => {
     world.createEntity(blob(hq));
   }, 200);
+
+  // debugging tools
+  window.spawnEnemy = () => world.createEntity(enemy(hq));
+  window.spawnBlob = () => world.createEntity(blob(hq));
+  window.spawnFood = () => world.createEntity(food(hq));
+
+  window.addEventListener("keydown", ev => {
+    if (ev.key === "e") {
+      window.spawnEnemy();
+    }
+    if (ev.key === "b") {
+      window.spawnBlob();
+    }
+    if (ev.key === "f") {
+      window.spawnFood();
+    }
+  });
 
   // visuals
   world.addSystem(
