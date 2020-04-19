@@ -62,7 +62,9 @@ export const food = parent => ent =>
         parent.components.PositionComponent.y
       )
     )
-    .addComponent(new SpriteComponent(FOOD_RAD, "#DA7783"))
+    .addComponent(
+      new SpriteComponent(FOOD_RAD, parent.components.SpriteComponent.color)
+    )
     .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(1)))
     .addComponent(new MembraneComponent(3, "#fff"))
     .addComponent(new VelocityComponent(FOOD_SPD, rnd(360)))
