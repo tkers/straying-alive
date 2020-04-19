@@ -103,8 +103,8 @@ export const enemy = target => ent => {
         directionVar: 45
       })
     )
-    .addComponent(new TimedSpawnComponent(food(ent), 1, 1));
+    .addComponent(new TimedSpawnComponent(food(ent), 3, 2));
 };
 
 export const enemyBase = target => ent =>
-  ent.addComponent(new TimedSpawnComponent(enemy(target), 5, 1));
+  ent.addComponent(new TimedSpawnComponent(enemy(target), 8, 3));
