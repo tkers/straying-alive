@@ -17,11 +17,12 @@ const HEIGHT = 640;
 
 const BASE_RAD = 30;
 const BLOB_RAD = 20;
-const BLOB_SPD = 60;
-const BLOB_TIM = (BASE_RAD + BLOB_RAD) / BLOB_SPD;
+const BLOB_SPD = 140;
+const BLOB_ACC = BLOB_SPD / 4;
+const BLOB_TIM = Math.sqrt(((BASE_RAD + BLOB_RAD) / BLOB_ACC) * 2);
 const ENEMY_RAD = 15;
-const ENEMY_SPD = 90;
-const FOOD_SPD = 20;
+const ENEMY_SPD = 100;
+const FOOD_SPD = 5;
 const FOOD_RAD = 5;
 const FOOD_TIM = (ENEMY_RAD + FOOD_RAD) / (FOOD_SPD + ENEMY_SPD);
 
@@ -37,7 +38,7 @@ export const blob = parent => ent =>
     .addComponent(new SpriteComponent(BLOB_RAD, "#F5E4AA"))
     .addComponent(new SpriteFadeComponent("#7ACCAF", 5, BLOB_TIM + rnd(0.5)))
     .addComponent(new MembraneComponent(5, "#fff"))
-    .addComponent(new VelocityComponent(BLOB_SPD, rnd(360)))
+    .addComponent(new VelocityComponent(BLOB_SPD, rnd(360), BLOB_ACC))
     .addComponent(
       new WanderComponent({ interval: 5, intervalVar: 1, turnSpeed: 90 })
     )

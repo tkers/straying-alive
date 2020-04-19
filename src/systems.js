@@ -119,12 +119,13 @@ export const MovementSystem = (ents, dt) =>
     ent.components.PositionComponent.y +=
       Math.sin(r) * ent.components.VelocityComponent.speed * dt;
     const ds =
-      ent.components.VelocityComponent.originalSpeed -
+      ent.components.VelocityComponent.maxSpeed -
       ent.components.VelocityComponent.speed;
     if (ds > 0) {
       ent.components.VelocityComponent.speed = Math.min(
-        ent.components.VelocityComponent.originalSpeed,
-        ent.components.VelocityComponent.speed + dt * ds
+        ent.components.VelocityComponent.maxSpeed,
+        ent.components.VelocityComponent.speed +
+          ent.components.VelocityComponent.acceleration * dt
       );
     }
   });
@@ -202,6 +203,8 @@ export const MouseSelectionSystem = canvas => {
     if (mode === 2) {
       ents.forEach(ent => {
         ent.components.ControllableComponent.isSelected = false;
+        ent.components.VelocityComponent.acceleration =
+          ent.components.VelocityComponent.maxSpeed;
         if (ent.components.WanderComponent) {
           ent.components.WanderComponent.resetTimer();
         }
@@ -231,10 +234,11 @@ export const MouseTargetSystem = canvas => {
           mouseY
         );
 
-        ent.components.VelocityComponent.speed =
-          dist < ent.components.VelocityComponent.originalSpeed
-            ? dist
-            : ent.components.VelocityComponent.originalSpeed;
+        if (dist < ent.components.VelocityComponent.speed / 2) {
+          ent.components.VelocityComponent.speed = dist;
+          ent.components.VelocityComponent.acceleration =
+            ent.components.VelocityComponent.maxSpeed * 10;
+        }
 
         const targetDir = getDirection(
           ent.components.PositionComponent.x,

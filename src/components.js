@@ -48,9 +48,10 @@ export function MembraneComponent(size, color) {
   this.color = color;
 }
 
-export function VelocityComponent(speed, direction) {
-  this.originalSpeed = speed;
-  this.speed = speed;
+export function VelocityComponent(maxSpeed, direction, acceleration) {
+  this.maxSpeed = maxSpeed;
+  this.speed = acceleration ? 0 : maxSpeed;
+  this.acceleration = acceleration || maxSpeed;
   this.direction = direction;
 }
 

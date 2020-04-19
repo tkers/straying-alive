@@ -32,10 +32,9 @@ export const createGame = (canvas, w = 960, h = 640) => {
 
   const hq = world.createEntity(base);
   world.createEntity(enemyBase(hq));
-
-  world.createEntity(blob(hq));
-  world.createEntity(blob(hq));
-  world.createEntity(blob(hq));
+  setTimeout(() => {
+    world.createEntity(blob(hq));
+  }, 200);
 
   // visuals
   world.addSystem(
