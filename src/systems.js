@@ -256,6 +256,7 @@ export const NomSystem = (ents, dt) => {
     enemy.removeTag("enemy");
     enemy.addTag("blob");
     enemy.addComponent(new SpriteFadeComponent("#7ACCAF", 100));
+    enemy.addComponent(new ControllableComponent(3600));
   });
 };
 
