@@ -3,7 +3,8 @@ import { hasComponent, hasTag } from "./ecs";
 import {
   MembraneComponent,
   SpriteFadeComponent,
-  ControllableComponent
+  ControllableComponent,
+  SpawnComponent
 } from "./components";
 import {
   rnd,
@@ -237,11 +238,7 @@ export const SpriteFadeSystem = (ents, dt) =>
   });
 
 export const NomSystem = (ents, dt) => {
-  const n = combinations(
-    ents.filter(e => !e.hasComponent(SpriteFadeComponent)),
-    hasTag("blob"),
-    hasTag("enemy")
-  );
+  const n = combinations(ents, hasTag("blob"), hasTag("enemy"));
   n.filter(
     ([blob, enemy]) =>
       getDistance(
@@ -257,6 +254,27 @@ export const NomSystem = (ents, dt) => {
     enemy.addTag("blob");
     enemy.addComponent(new SpriteFadeComponent("#7ACCAF", 100));
     enemy.addComponent(new ControllableComponent(3600));
+  });
+};
+
+export const BadNomSystem = (ents, dt) => {
+  const n = combinations(ents, hasTag("enemy"), hasTag("base"));
+  n.filter(
+    ([enemy, base]) =>
+      getDistance(
+        enemy.components.PositionComponent.x,
+        enemy.components.PositionComponent.y,
+        base.components.PositionComponent.x,
+        base.components.PositionComponent.y
+      ) <
+      enemy.components.SpriteComponent.size +
+        base.components.SpriteComponent.size
+  ).forEach(([enemy, base]) => {
+    enemy.addComponent(new SpriteFadeComponent("#AAAAAA", 1));
+    enemy.removeTag("enemy");
+    base.addComponent(new SpriteFadeComponent("#AAAAAA", 1));
+    base.removeComponent(SpawnComponent);
+    base.removeTag("base");
   });
 };
 

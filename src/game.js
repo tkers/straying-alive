@@ -16,6 +16,7 @@ import {
   MouseSelectionSystem,
   MouseTargetSystem,
   NomSystem,
+  BadNomSystem,
   SpawnSystem,
   CullingSystem
 } from "./systems";
@@ -47,6 +48,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     MouseTargetSystem(canvas)
   );
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
+  world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
   world.addSystem([SpawnComponent], SpawnSystem(world));
   world.addSystem(
     [PositionComponent],
