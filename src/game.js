@@ -49,7 +49,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem([VelocityComponent, WanderComponent], WanderSystem);
   world.addSystem(
     [PositionComponent],
-    CullingSystem(-50, -50, canvas.width + 50, canvas.height + 50)
+    CullingSystem(-20, -20, canvas.width + 20, canvas.height + 20)
   );
 
   // control
