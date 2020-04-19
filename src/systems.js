@@ -8,6 +8,7 @@ import {
   DecayComponent,
   ControllableComponent,
   TimedSpawnComponent,
+  BucketSpawnComponent,
   HungrySpawnComponent,
   ScoreComponent
 } from "./components";
@@ -355,7 +356,7 @@ export const NomSystem = (ents, dt) => {
       2;
 
     enemy.removeTag("enemy");
-    enemy.removeComponent(TimedSpawnComponent);
+    enemy.removeComponent(BucketSpawnComponent);
     enemy.removeComponent(WanderComponent);
     enemy.addComponent(new TargetComponent(midX, midY, 100));
     enemy.addComponent(new SpriteFadeComponent("#f6e5f5", 5));
@@ -395,6 +396,13 @@ export const TimedSpawnSystem = world => (ents, dt) =>
   ents.forEach(ent => {
     if (ent.components.TimedSpawnComponent.interval(dt)) {
       world.createEntity(ent.components.TimedSpawnComponent.assemblage);
+    }
+  });
+
+export const BucketSpawnSystem = world => (ents, dt) =>
+  ents.forEach(ent => {
+    if (ent.components.BucketSpawnComponent.bucket(dt)) {
+      world.createEntity(ent.components.BucketSpawnComponent.assemblage);
     }
   });
 

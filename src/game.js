@@ -9,6 +9,7 @@ import {
   WanderComponent,
   ControllableComponent,
   TimedSpawnComponent,
+  BucketSpawnComponent,
   HungrySpawnComponent,
   ScoreComponent
 } from "./components";
@@ -25,6 +26,7 @@ import {
   NomSystem,
   BadNomSystem,
   TimedSpawnSystem,
+  BucketSpawnSystem,
   HungrySpawnSystem,
   CullingSystem,
   ScoreSystem
@@ -105,6 +107,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
 
   // game flow
   world.addSystem([TimedSpawnComponent], TimedSpawnSystem(world));
+  world.addSystem([BucketSpawnComponent], BucketSpawnSystem(world));
   world.addSystem([HungrySpawnComponent], HungrySpawnSystem(world));
   world.addSystem([ScoreComponent], ScoreSystem);
 

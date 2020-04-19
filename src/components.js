@@ -25,6 +25,30 @@ const makeInterval = (delay, variance = 0) => {
   };
 };
 
+const makeBucket = (capacity, inRate, outRate) => {
+  let tokens = capacity;
+  let inDelay = inRate;
+  let outDelay = rnd(outRate);
+  return dt => {
+    inDelay -= dt;
+    if (inDelay < 0) {
+      inDelay = inRate;
+      if (tokens < capacity) {
+        tokens++;
+      }
+    }
+    outDelay -= dt;
+    if (outDelay < 0) {
+      outDelay = rnd(outRate);
+      if (tokens > 0) {
+        tokens--;
+        return true;
+      }
+    }
+    return false;
+  };
+};
+
 export function PositionComponent(x, y) {
   this.x = x;
   this.y = y;
@@ -100,6 +124,11 @@ export function ControllableComponent(speed, turnSpeed) {
 
 export function TimedSpawnComponent(assemblage, interval, variance) {
   this.interval = makeInterval(interval, variance);
+  this.assemblage = assemblage;
+}
+
+export function BucketSpawnComponent(assemblage, capacity, inRate, outRate) {
+  this.bucket = makeBucket(capacity, inRate, outRate);
   this.assemblage = assemblage;
 }
 

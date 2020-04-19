@@ -8,6 +8,7 @@ import {
   ControllableComponent,
   DecayComponent,
   TimedSpawnComponent,
+  BucketSpawnComponent,
   HungrySpawnComponent,
   ScoreComponent
 } from "./components";
@@ -110,8 +111,8 @@ export const enemy = target => ent => {
         directionVar: 45
       })
     )
-    .addComponent(new TimedSpawnComponent(food(ent), 3, 2));
+    .addComponent(new BucketSpawnComponent(food(ent), 3, 2, 4));
 };
 
 export const enemyBase = target => ent =>
-  ent.addComponent(new TimedSpawnComponent(enemy(target), 8, 3));
+  ent.addComponent(new BucketSpawnComponent(enemy(target), 3, 8, 10));
