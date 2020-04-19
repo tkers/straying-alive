@@ -39,6 +39,7 @@ export const RenderSystem = (canvas, w, h, globalState) => {
       )
       .forEach(ent => {
         ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.arc(
           ent.components.PositionComponent.x,
@@ -92,17 +93,21 @@ export const RenderSystem = (canvas, w, h, globalState) => {
     });
 
     // score
-    const text = `${globalState.score.toString().padStart(5, "0")} points`;
+    const text = `${globalState.score.toString().padStart(5, "0")}`;
+    const x = w - 16;
+    const y = h - 10;
+    ctx.font = `30px Nanum Pen Script`;
 
-    ctx.font = "16px sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
 
+    ctx.strokeStyle = "#C2B8C3";
+    ctx.lineWidth = 2;
+    ctx.strokeText(text, x, y + 1);
     ctx.strokeStyle = "#FFFFFF";
-    ctx.lineWidth = 3;
-    ctx.strokeText(text, 8, 8);
-    ctx.fillStyle = "#000000";
-    ctx.fillText(text, 8, 8);
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = "#7ACCAF";
+    ctx.fillText(text, x, y);
   };
 };
 
