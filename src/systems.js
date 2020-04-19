@@ -17,10 +17,11 @@ import {
 } from "./utils";
 import { resizeCanvas } from "./canvas";
 
+let t = 0;
 export const RenderSystem = (canvas, w, h) => {
   const ctx = canvas.getContext("2d");
   resizeCanvas(canvas, w, h);
-  return ents => {
+  return (ents, dt) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
@@ -50,6 +51,7 @@ export const RenderSystem = (canvas, w, h) => {
       ctx.fill();
     });
 
+    t = (t + (dt * Math.PI) / 3.5) % (Math.PI * 2);
     ents
       .filter(
         ent =>
@@ -57,7 +59,7 @@ export const RenderSystem = (canvas, w, h) => {
           ent.components.ControllableComponent.isSelected
       )
       .forEach(ent => {
-        ctx.strokeStyle = "#222";
+        ctx.strokeStyle = "#fff";
         ctx.beginPath();
         ctx.arc(
           ent.components.PositionComponent.x,
@@ -67,10 +69,10 @@ export const RenderSystem = (canvas, w, h) => {
               ? ent.components.MembraneComponent.size
               : 0) +
             5,
-          0,
-          Math.PI * 2
+          t,
+          t + Math.PI * 2
         );
-        ctx.setLineDash([10, 5]);
+        ctx.setLineDash([10, 7]);
         ctx.stroke();
         ctx.setLineDash([]);
       });
