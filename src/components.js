@@ -54,12 +54,20 @@ export function VelocityComponent(speed, direction) {
   this.direction = direction;
 }
 
-export function WanderComponent(interval, variance, turnSpeed = 180) {
+export function WanderComponent({
+  interval,
+  intervalVar,
+  directionVar = 360,
+  turnSpeed = 180
+}) {
+  this.interval = interval;
+  this.variance = intervalVar;
+  this.turnSpeed = turnSpeed;
+  this.directionVariance = directionVar;
+
   this.timer = 0;
   this.targetDirection = null;
-  this.interval = interval;
-  this.variance = variance;
-  this.turnSpeed = turnSpeed;
+  this.originalDirection = null;
 
   this.resetTimer = () => {
     this.timer = this.interval + rnd(-this.variance, this.variance);

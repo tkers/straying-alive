@@ -1,6 +1,8 @@
 export const rnd = (n, m) =>
   typeof m === "number" ? Math.random() * (m - n) + n : Math.random() * n;
 
+export const choose = elems => elems[Math.floor(Math.random() * elems.length)];
+
 export const wrapDir = d => (d + 360) % 360;
 export const turnToDir = (startDir, targetDir, maxSpeed) => {
   const delta = targetDir - startDir;

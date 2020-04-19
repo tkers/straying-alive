@@ -10,6 +10,7 @@ import {
   turnToDir,
   getDistance,
   getDirection,
+  wrapDir,
   combinations
 } from "./utils";
 
@@ -101,11 +102,24 @@ export const WanderSystem = (ents, dt) =>
         !ent.components.ControllableComponent.isSelected
     )
     .forEach(ent => {
+      if (ent.components.WanderComponent.originalDirection === null) {
+        ent.components.WanderComponent.originalDirection =
+          ent.components.VelocityComponent.direction;
+      }
       if (ent.components.WanderComponent.timer > 0) {
         ent.components.WanderComponent.timer -= dt;
       } else {
         ent.components.WanderComponent.resetTimer();
-        ent.components.WanderComponent.targetDirection = rnd(360);
+        ent.components.WanderComponent.targetDirection =
+          ent.components.WanderComponent.directionVariance === 360
+            ? rnd(360)
+            : wrapDir(
+                ent.components.WanderComponent.originalDirection +
+                  rnd(
+                    -ent.components.WanderComponent.directionVariance,
+                    ent.components.WanderComponent.directionVariance
+                  )
+              );
       }
       if (ent.components.WanderComponent.targetDirection !== null) {
         ent.components.VelocityComponent.direction = turnToDir(
