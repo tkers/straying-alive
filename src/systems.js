@@ -16,6 +16,7 @@ import {
   getDistance,
   getDirection,
   wrapDir,
+  accelerate,
   combinations
 } from "./utils";
 import { resizeCanvas } from "./canvas";
@@ -129,17 +130,23 @@ export const MovementSystem = (ents, dt) =>
     ent.components.PositionComponent.y +=
       Math.sin(r) * ent.components.VelocityComponent.speed * dt;
 
-    // accelerate
-    const ds =
-      ent.components.VelocityComponent.maxSpeed -
-      ent.components.VelocityComponent.speed;
-    if (ds > 0) {
-      ent.components.VelocityComponent.speed = Math.min(
-        ent.components.VelocityComponent.maxSpeed,
-        ent.components.VelocityComponent.speed +
-          ent.components.VelocityComponent.acceleration * dt
+    // accelerate to target speed
+    if (ent.hasComponent(TargetComponent)) {
+      ent.components.VelocityComponent.speed = accelerate(
+        ent.components.VelocityComponent.speed,
+        ent.components.TargetComponent.speed,
+        1000 * dt
       );
+      return;
     }
+
+    // accelerate to base speed
+    ent.components.VelocityComponent.speed = accelerate(
+      ent.components.VelocityComponent.speed,
+      ent.components.VelocityComponent.baseSpeed,
+      ent.components.VelocityComponent.acceleration * dt,
+      500 * dt
+    );
   });
 
 export const TargetSystem = (ents, dt) => {
@@ -151,11 +158,10 @@ export const TargetSystem = (ents, dt) => {
       ent.components.TargetComponent.y
     );
 
-    if (dist < ent.components.VelocityComponent.speed / 2) {
-      ent.components.VelocityComponent.speed = dist;
-      ent.components.VelocityComponent.acceleration =
-        ent.components.VelocityComponent.maxSpeed * 10;
-    }
+    ent.components.TargetComponent.speed =
+      dist > ent.components.TargetComponent.maxSpeed / 2
+        ? ent.components.TargetComponent.maxSpeed
+        : dist * 2;
 
     const targetDir = getDirection(
       ent.components.PositionComponent.x,
@@ -243,6 +249,7 @@ export const MouseSelectionSystem = canvas => {
           new TargetComponent(
             clickX,
             clickY,
+            clickedEnt.components.ControllableComponent.speed,
             clickedEnt.components.ControllableComponent.turnSpeed
           )
         );
@@ -254,9 +261,6 @@ export const MouseSelectionSystem = canvas => {
         ent.components.ControllableComponent.isSelected = false;
         ent.components.ControllableComponent.mouse = false;
         ent.removeComponent(TargetComponent);
-
-        ent.components.VelocityComponent.acceleration =
-          ent.components.VelocityComponent.maxSpeed;
         if (ent.components.WanderComponent) {
           ent.components.WanderComponent.resetTimer();
         }
@@ -352,14 +356,14 @@ export const NomSystem = (ents, dt) => {
     enemy.removeTag("enemy");
     enemy.removeComponent(TimedSpawnComponent);
     enemy.removeComponent(WanderComponent);
-    enemy.addComponent(new TargetComponent(midX, midY));
+    enemy.addComponent(new TargetComponent(midX, midY, 100));
     enemy.addComponent(new SpriteFadeComponent("#f6e5f5", 5));
     enemy.addComponent(new DecayComponent(4, 0.5));
 
     blob.removeTag("blob");
     blob.removeComponent(ControllableComponent);
     blob.removeComponent(WanderComponent);
-    blob.addComponent(new TargetComponent(midX, midY));
+    blob.addComponent(new TargetComponent(midX, midY, 100));
     blob.addComponent(new SpriteFadeComponent("#f6e5f5", 5));
     blob.addComponent(new DecayComponent(4, 0.5));
   });

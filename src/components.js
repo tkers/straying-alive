@@ -54,16 +54,18 @@ export function MembraneComponent(size, color) {
   this.color = color;
 }
 
-export function VelocityComponent(maxSpeed, direction, acceleration) {
-  this.maxSpeed = maxSpeed;
-  this.speed = acceleration ? 0 : maxSpeed;
-  this.acceleration = acceleration || maxSpeed;
+export function VelocityComponent(speed, direction, acceleration) {
+  this.baseSpeed = speed;
+  this.speed = acceleration ? 0 : speed;
+  this.acceleration = acceleration || speed;
   this.direction = direction;
 }
 
-export function TargetComponent(x, y, turnSpeed = 360) {
+export function TargetComponent(x, y, maxSpeed, turnSpeed = 360) {
   this.x = x;
   this.y = y;
+  this.maxSpeed = maxSpeed;
+  this.speed = maxSpeed;
   this.turnSpeed = turnSpeed;
 }
 
@@ -90,8 +92,9 @@ export function WanderComponent({
   this.resetTimer();
 }
 
-export function ControllableComponent(turnSpeed) {
+export function ControllableComponent(speed, turnSpeed) {
   this.isSelected = false;
+  this.speed = speed;
   this.turnSpeed = turnSpeed;
 }
 

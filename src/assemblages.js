@@ -17,7 +17,7 @@ const HEIGHT = 640;
 
 const BASE_RAD = 30;
 const BLOB_RAD = 20;
-const BLOB_SPD = 140;
+const BLOB_SPD = 30;
 const BLOB_ACC = BLOB_SPD / 4;
 const BLOB_TIM = Math.sqrt(((BASE_RAD + BLOB_RAD) / BLOB_ACC) * 2);
 const ENEMY_RAD = 15;
@@ -42,7 +42,7 @@ export const blob = parent => ent =>
     .addComponent(
       new WanderComponent({ interval: 5, intervalVar: 1, turnSpeed: 90 })
     )
-    .addComponent(new ControllableComponent(3600));
+    .addComponent(new ControllableComponent(250, 3600));
 
 export const base = ent =>
   ent

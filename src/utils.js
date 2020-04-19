@@ -26,3 +26,14 @@ export const combinations = (elems, isLeft, isRight) => {
   const right = elems.filter(isRight);
   return left.flatMap(l => right.map(r => [l, r]));
 };
+
+export const accelerate = (speed, targetSpeed, acc, dec = acc) => {
+  const diff = targetSpeed - speed;
+  if (diff > 0) {
+    return Math.min(targetSpeed, speed + acc);
+  } else if (diff < 0) {
+    return Math.max(targetSpeed, speed - dec);
+  } else {
+    return speed;
+  }
+};
