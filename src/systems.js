@@ -317,7 +317,7 @@ export const FoodNomSystem = (world, base) => (ents, dt) => {
   });
 };
 
-export const NomSystem = (ents, dt) => {
+export const NomSystem = world => (ents, dt) => {
   const n = combinations(ents, hasTag("blob"), hasTag("enemy"));
   n.filter(
     ([blob, enemy]) =>
@@ -338,6 +338,8 @@ export const NomSystem = (ents, dt) => {
       (blob.components.PositionComponent.y +
         enemy.components.PositionComponent.y) /
       2;
+
+    world.emit("eat-enemy");
 
     enemy.removeTag("enemy");
     enemy.removeComponent(BucketSpawnComponent);

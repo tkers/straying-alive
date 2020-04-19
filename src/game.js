@@ -103,7 +103,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     [PositionComponent, SpriteComponent],
     FoodNomSystem(world, hq)
   );
-  world.addSystem([PositionComponent, SpriteComponent], NomSystem);
+  world.addSystem([PositionComponent, SpriteComponent], NomSystem(world));
   world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
   world.addSystem([DecayComponent], DecaySystem);
 
@@ -114,6 +114,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
 
   world.on("eat-food", () => {
     globalState.score += 10;
+  });
+
+  world.on("eat-enemy", () => {
+    globalState.score += 50;
   });
 
   return world;
