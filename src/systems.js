@@ -1,6 +1,7 @@
 import chroma from "chroma-js";
 import { hasComponent, hasTag } from "./ecs";
 import {
+  TargetComponent,
   MembraneComponent,
   SpriteFadeComponent,
   ControllableComponent,
@@ -130,13 +131,38 @@ export const MovementSystem = (ents, dt) =>
     }
   });
 
+export const TargetSystem = (ents, dt) => {
+  ents.forEach(ent => {
+    const dist = getDistance(
+      ent.components.PositionComponent.x,
+      ent.components.PositionComponent.y,
+      ent.components.TargetComponent.x,
+      ent.components.TargetComponent.y
+    );
+
+    if (dist < ent.components.VelocityComponent.speed / 2) {
+      ent.components.VelocityComponent.speed = dist;
+      ent.components.VelocityComponent.acceleration =
+        ent.components.VelocityComponent.maxSpeed * 10;
+    }
+
+    const targetDir = getDirection(
+      ent.components.PositionComponent.x,
+      ent.components.PositionComponent.y,
+      ent.components.TargetComponent.x,
+      ent.components.TargetComponent.y
+    );
+    ent.components.VelocityComponent.direction = turnToDir(
+      ent.components.VelocityComponent.direction,
+      targetDir,
+      ent.components.TargetComponent.turnSpeed * dt
+    );
+  });
+};
+
 export const WanderSystem = (ents, dt) =>
   ents
-    .filter(
-      ent =>
-        !ent.hasComponent(ControllableComponent) ||
-        !ent.components.ControllableComponent.isSelected
-    )
+    .filter(ent => !ent.hasComponent(TargetComponent))
     .forEach(ent => {
       if (ent.components.WanderComponent.originalDirection === null) {
         ent.components.WanderComponent.originalDirection =
@@ -199,6 +225,13 @@ export const MouseSelectionSystem = canvas => {
       if (clickedEnt) {
         clickedEnt.components.ControllableComponent.isSelected = true;
         clickedEnt.components.ControllableComponent.mouse = true;
+        clickedEnt.addComponent(
+          new TargetComponent(
+            clickX,
+            clickY,
+            clickedEnt.components.ControllableComponent.turnSpeed
+          )
+        );
       }
     }
 
@@ -206,6 +239,8 @@ export const MouseSelectionSystem = canvas => {
       ents.forEach(ent => {
         ent.components.ControllableComponent.isSelected = false;
         ent.components.ControllableComponent.mouse = false;
+        ent.removeComponent(TargetComponent);
+
         ent.components.VelocityComponent.acceleration =
           ent.components.VelocityComponent.maxSpeed;
         if (ent.components.WanderComponent) {
@@ -234,30 +269,8 @@ export const MouseTargetSystem = canvas => {
           ent.components.ControllableComponent.mouse
       )
       .forEach(ent => {
-        const dist = getDistance(
-          ent.components.PositionComponent.x,
-          ent.components.PositionComponent.y,
-          mouseX,
-          mouseY
-        );
-
-        if (dist < ent.components.VelocityComponent.speed / 2) {
-          ent.components.VelocityComponent.speed = dist;
-          ent.components.VelocityComponent.acceleration =
-            ent.components.VelocityComponent.maxSpeed * 10;
-        }
-
-        const targetDir = getDirection(
-          ent.components.PositionComponent.x,
-          ent.components.PositionComponent.y,
-          mouseX,
-          mouseY
-        );
-        ent.components.VelocityComponent.direction = turnToDir(
-          ent.components.VelocityComponent.direction,
-          targetDir,
-          ent.components.ControllableComponent.turnSpeed * dt
-        );
+        ent.components.TargetComponent.x = mouseX;
+        ent.components.TargetComponent.y = mouseY;
       });
 };
 

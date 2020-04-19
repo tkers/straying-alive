@@ -4,6 +4,7 @@ import {
   SpriteFadeComponent,
   PositionComponent,
   VelocityComponent,
+  TargetComponent,
   WanderComponent,
   ControllableComponent,
   TimedSpawnComponent,
@@ -14,6 +15,7 @@ import {
   RenderSystem,
   SpriteFadeSystem,
   MovementSystem,
+  TargetSystem,
   WanderSystem,
   MouseSelectionSystem,
   MouseTargetSystem,
@@ -51,6 +53,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
     [PositionComponent],
     CullingSystem(-20, -20, canvas.width + 20, canvas.height + 20)
   );
+  world.addSystem(
+    [PositionComponent, VelocityComponent, TargetComponent],
+    TargetSystem
+  );
 
   // control
   world.addSystem(
@@ -58,7 +64,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     MouseSelectionSystem(canvas)
   );
   world.addSystem(
-    [ControllableComponent, PositionComponent, VelocityComponent],
+    [ControllableComponent, TargetComponent],
     MouseTargetSystem(canvas)
   );
 

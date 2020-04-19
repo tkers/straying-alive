@@ -55,6 +55,12 @@ export function VelocityComponent(maxSpeed, direction, acceleration) {
   this.direction = direction;
 }
 
+export function TargetComponent(x, y, turnSpeed = 360) {
+  this.x = x;
+  this.y = y;
+  this.turnSpeed = turnSpeed;
+}
+
 export function WanderComponent({
   interval,
   intervalVar,
