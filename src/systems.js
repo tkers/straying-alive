@@ -76,20 +76,22 @@ export const RenderSystem = (canvas, w, h) => {
       });
 
     ents.filter(hasComponent(ScoreComponent)).forEach(ent => {
-      ctx.fillStyle = ent.components.ScoreComponent.gameover
-        ? "#DD0000"
-        : "#000000";
+      const score = ent.components.ScoreComponent.score;
+      const text = `Time ${Math.floor(score / 60)}:${Math.floor(score % 60)
+        .toString()
+        .padStart(2, "0")}`;
+
       ctx.font = "16px sans-serif";
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
-      const score = ent.components.ScoreComponent.score;
-      ctx.fillText(
-        `Time ${Math.floor(score / 60)}:${Math.floor(score % 60)
-          .toString()
-          .padStart(2, "0")}`,
-        8,
-        8
-      );
+
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.lineWidth = 2;
+      ctx.strokeText(text, 8, 8);
+      ctx.fillStyle = ent.components.ScoreComponent.gameover
+        ? "#DD0000"
+        : "#000000";
+      ctx.fillText(text, 8, 8);
     });
   };
 };
