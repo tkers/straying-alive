@@ -36,7 +36,9 @@ export const blob = parent => ent =>
         parent.components.PositionComponent.y
       )
     )
-    .addComponent(new SpriteComponent(BLOB_RAD, "#F5E4AA"))
+    .addComponent(
+      new SpriteComponent(BLOB_RAD, parent.components.SpriteComponent.color)
+    )
     .addComponent(new SpriteFadeComponent("#7ACCAF", 5, BLOB_TIM + rnd(0.5)))
     .addComponent(new MembraneComponent(5, "#fff"))
     .addComponent(new VelocityComponent(BLOB_SPD, rnd(360), BLOB_ACC))
