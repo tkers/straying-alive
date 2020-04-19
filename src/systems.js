@@ -230,7 +230,10 @@ export const MouseSelectionSystem = canvas => {
             clickY,
             ent.components.PositionComponent.x,
             ent.components.PositionComponent.y
-          ) <= ent.components.SpriteComponent.size
+          ) <=
+          ent.components.SpriteComponent.size +
+            ent.components.MembraneComponent.size +
+            10
       );
 
       if (clickedEnt) {
