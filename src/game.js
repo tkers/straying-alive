@@ -2,6 +2,7 @@ import { createWorld } from "./ecs";
 import {
   SpriteComponent,
   SpriteFadeComponent,
+  DecayComponent,
   PositionComponent,
   VelocityComponent,
   TargetComponent,
@@ -14,6 +15,7 @@ import {
 import {
   RenderSystem,
   SpriteFadeSystem,
+  DecaySystem,
   MovementSystem,
   TargetSystem,
   WanderSystem,
@@ -82,6 +84,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem([PositionComponent, SpriteComponent], FoodNomSystem(hq));
   world.addSystem([PositionComponent, SpriteComponent], NomSystem);
   world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
+  world.addSystem([DecayComponent], DecaySystem);
 
   // game flow
   world.addSystem([TimedSpawnComponent], TimedSpawnSystem(world));

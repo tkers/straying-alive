@@ -43,6 +43,12 @@ export function SpriteFadeComponent(color, speed, delay = 0) {
   this.time = 0;
 }
 
+export function DecayComponent(speed = 1, delay = 0) {
+  this.speed = speed;
+  this.delay = delay;
+  this.life = 1;
+}
+
 export function MembraneComponent(size, color) {
   this.size = size;
   this.color = color;

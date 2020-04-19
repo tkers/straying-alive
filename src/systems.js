@@ -380,3 +380,18 @@ export const CullingSystem = (minX, minY, maxX, maxY) => ents =>
       ent.destroy();
     }
   });
+
+export const DecaySystem = (ents, dt) =>
+  ents.forEach(ent => {
+    if (ent.components.DecayComponent.delay > 0) {
+      ent.components.DecayComponent.delay -= dt;
+      return;
+    }
+
+    ent.components.DecayComponent.life -=
+      ent.components.DecayComponent.speed * dt;
+
+    if (ent.components.DecayComponent.life < 0) {
+      ent.destroy();
+    }
+  });
