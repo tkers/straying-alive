@@ -274,9 +274,9 @@ export const MouseSelectionSystem = canvas => {
 export const MouseTargetSystem = canvas => {
   let mouseX = 0;
   let mouseY = 0;
-  canvas.addEventListener("mousemove", e => {
-    mouseX = e.pageX - e.target.offsetLeft;
-    mouseY = e.pageY - e.target.offsetTop;
+  window.addEventListener("mousemove", e => {
+    mouseX = e.pageX - canvas.offsetLeft;
+    mouseY = e.pageY - canvas.offsetTop;
   });
 
   return (ents, dt) =>
