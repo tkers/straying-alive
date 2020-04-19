@@ -19,25 +19,17 @@ import {
   SpawnSystem,
   CullingSystem
 } from "./systems";
-import { base, blob, enemy } from "./assemblages";
+import { base, enemyBase, blob } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
   const world = createWorld();
 
-  world.createEntity(blob);
-  world.createEntity(blob);
-  world.createEntity(blob);
-  world.createEntity(blob);
-  world.createEntity(blob);
-  world.createEntity(blob);
-  world.createEntity(blob);
-
-  world.createEntity(enemy);
-  world.createEntity(enemy);
-  world.createEntity(enemy);
-  world.createEntity(enemy);
-
   world.createEntity(base);
+  world.createEntity(enemyBase);
+
+  world.createEntity(blob);
+  world.createEntity(blob);
+  world.createEntity(blob);
 
   world.addSystem(
     [SpriteComponent, PositionComponent],

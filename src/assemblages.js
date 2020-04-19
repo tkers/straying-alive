@@ -61,3 +61,6 @@ export const enemy = ent => {
       })
     );
 };
+
+export const enemyBase = ent =>
+  ent.addComponent(new SpawnComponent(enemy, 5, 1));
