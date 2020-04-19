@@ -12,6 +12,9 @@ import {
 } from "./components";
 import { rnd, choose, getDirection } from "./utils";
 
+const WIDTH = 960;
+const HEIGHT = 640;
+
 const BASE_RAD = 30;
 const BLOB_RAD = 20;
 const BLOB_SPD = 60;
@@ -22,10 +25,15 @@ const FOOD_SPD = 20;
 const FOOD_RAD = 5;
 const FOOD_TIM = (ENEMY_RAD + FOOD_RAD) / (FOOD_SPD + ENEMY_SPD);
 
-export const blob = ent =>
+export const blob = parent => ent =>
   ent
     .addTag("blob")
-    .addComponent(new PositionComponent(480, 320))
+    .addComponent(
+      new PositionComponent(
+        parent.components.PositionComponent.x,
+        parent.components.PositionComponent.y
+      )
+    )
     .addComponent(new SpriteComponent(BLOB_RAD, "#F5E4AA"))
     .addComponent(new SpriteFadeComponent("#7ACCAF", 5, BLOB_TIM + rnd(0.5)))
     .addComponent(new MembraneComponent(5, "#fff"))
@@ -34,6 +42,15 @@ export const blob = ent =>
       new WanderComponent({ interval: 5, intervalVar: 1, turnSpeed: 90 })
     )
     .addComponent(new ControllableComponent(3600));
+
+export const base = ent =>
+  ent
+    .addTag("base")
+    .addComponent(new ScoreComponent())
+    .addComponent(new PositionComponent(WIDTH / 2, HEIGHT / 2))
+    .addComponent(new SpriteComponent(BASE_RAD, "#f5e4aa"))
+    .addComponent(new MembraneComponent(5, "#fff"))
+    .addComponent(new HungrySpawnComponent(blob(ent), 5));
 
 export const food = parent => ent =>
   ent
@@ -56,28 +73,16 @@ export const food = parent => ent =>
       })
     );
 
-export const base = ent =>
-  ent
-    .addTag("base")
-    .addComponent(new ScoreComponent())
-    .addComponent(new PositionComponent(480, 320))
-    .addComponent(new SpriteComponent(BASE_RAD, "#f5e4aa"))
-    .addComponent(new MembraneComponent(5, "#fff"))
-    .addComponent(new HungrySpawnComponent(blob, 5));
-
-const W = 960;
-const H = 640;
-
 export const enemy = ent => {
   const position = choose([
-    new PositionComponent(-20, rnd(H)),
-    new PositionComponent(W + 20, rnd(H)),
-    new PositionComponent(rnd(W), -20),
-    new PositionComponent(rnd(W), H + 20)
+    new PositionComponent(-20, rnd(HEIGHT)),
+    new PositionComponent(WIDTH + 20, rnd(HEIGHT)),
+    new PositionComponent(rnd(WIDTH), -20),
+    new PositionComponent(rnd(WIDTH), HEIGHT + 20)
   ]);
 
   const direction =
-    getDirection(position.x, position.y, W / 2, H / 2) + rnd(-30, 30);
+    getDirection(position.x, position.y, WIDTH / 2, HEIGHT / 2) + rnd(-30, 30);
 
   ent
     .addTag("enemy")
