@@ -502,7 +502,7 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
         10 * (1 - ctx.globalAlpha),
       60,
       3,
-      "#7ACCAF"
+      "#DA7783"
     );
     globalState.score > globalState.highScore &&
       drawText(
