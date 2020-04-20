@@ -112,8 +112,8 @@ export const enemy = target => ent => {
         directionVar: 45
       })
     )
-    .addComponent(new BucketSpawnComponent(food(ent), 3, 2, 4));
+    .addComponent(new BucketSpawnComponent(food(ent), 3, 1, 4));
 };
 
 export const enemyBase = target => ent =>
-  ent.addComponent(new BucketSpawnComponent(enemy(target), 3, 8, 10));
+  ent.addComponent(new BucketSpawnComponent(enemy(target), 2, 5, 12));
