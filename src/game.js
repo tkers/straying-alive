@@ -33,7 +33,7 @@ import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
 
 export const createGame = (canvas, w = 960, h = 640) => {
-  const globalState = { score: 0 };
+  const globalState = { score: 0, alive: true };
   const world = createWorld();
 
   const hq = world.createEntity(base);
@@ -70,54 +70,83 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addSystem([PositionComponent, VelocityComponent], MovementSystem);
   world.addSystem([VelocityComponent, WanderComponent], WanderSystem);
   world.addSystem(
-    [PositionComponent],
-    CullingSystem(-20, -20, canvas.width + 20, canvas.height + 20)
-  );
-  world.addSystem(
     [PositionComponent, VelocityComponent, TargetComponent],
     TargetSystem
   );
 
   // mouse input
-  world.addSystem(
-    [ControllableComponent, PositionComponent, SpriteComponent],
-    MouseSelectionSystem(canvas)
-  );
-  world.addSystem(
-    [ControllableComponent, TargetComponent],
-    MouseTargetSystem(canvas)
-  );
+  world
+    .addSystem(
+      [ControllableComponent, PositionComponent, SpriteComponent],
+      MouseSelectionSystem(canvas)
+    )
+    .addTag("gameplay");
+  world
+    .addSystem(
+      [ControllableComponent, TargetComponent],
+      MouseTargetSystem(canvas)
+    )
+    .addTag("gameplay");
 
   // touch input
-  world.addSystem(
-    [ControllableComponent, PositionComponent, SpriteComponent],
-    FingerSelectionSystem(canvas)
-  );
-  world.addSystem(
-    [ControllableComponent, PositionComponent, VelocityComponent],
-    FingerTargetSystem(canvas)
-  );
+  world
+    .addSystem(
+      [ControllableComponent, PositionComponent, SpriteComponent],
+      FingerSelectionSystem(canvas)
+    )
+    .addTag("gameplay");
+  world
+    .addSystem(
+      [ControllableComponent, PositionComponent, VelocityComponent],
+      FingerTargetSystem(canvas)
+    )
+    .addTag("gameplay");
 
   // collisions
   world.addSystem(
     [PositionComponent, SpriteComponent],
     FoodNomSystem(world, hq)
   );
-  world.addSystem([PositionComponent, SpriteComponent], NomSystem(world));
-  world.addSystem([PositionComponent, SpriteComponent], BadNomSystem);
+  world
+    .addSystem([PositionComponent, SpriteComponent], NomSystem(world))
+    .addTag("gameplay");
+  world
+    .addSystem([PositionComponent, SpriteComponent], BadNomSystem(world))
+    .addTag("gameplay");
+
+  // lifecycle
+  world.addSystem(
+    [PositionComponent],
+    CullingSystem(-20, -20, canvas.width + 20, canvas.height + 20)
+  );
   world.addSystem([DecayComponent], DecaySystem);
 
   // game flow
-  world.addSystem([TimedSpawnComponent], TimedSpawnSystem(world));
-  world.addSystem([BucketSpawnComponent], BucketSpawnSystem(world));
-  world.addSystem([HungrySpawnComponent], HungrySpawnSystem(world));
+  world
+    .addSystem([TimedSpawnComponent], TimedSpawnSystem(world))
+    .addTag("gameplay");
+  world
+    .addSystem([BucketSpawnComponent], BucketSpawnSystem(world))
+    .addTag("gameplay");
+  world
+    .addSystem([HungrySpawnComponent], HungrySpawnSystem(world))
+    .addTag("gameplay");
 
   world.on("eat-food", () => {
-    globalState.score += 10;
+    if (globalState.alive) {
+      globalState.score += 10;
+    }
   });
 
   world.on("eat-enemy", () => {
-    globalState.score += 50;
+    if (globalState.alive) {
+      globalState.score += 50;
+    }
+  });
+
+  world.on("game-over", () => {
+    globalState.alive = false;
+    world.getSystems("gameplay").forEach(s => s.pause());
   });
 
   return world;

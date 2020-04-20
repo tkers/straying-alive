@@ -362,7 +362,7 @@ export const NomSystem = world => (ents, dt) => {
   });
 };
 
-export const BadNomSystem = (ents, dt) => {
+export const BadNomSystem = world => (ents, dt) => {
   const n = combinations(ents, hasTag("enemy"), hasTag("base"));
   n.filter(
     ([enemy, base]) =>
@@ -379,6 +379,7 @@ export const BadNomSystem = (ents, dt) => {
       new SpriteFadeComponent(enemy.components.SpriteComponent.color, 10)
     );
     base.removeTag("base");
+    world.emit("game-over");
   });
 };
 

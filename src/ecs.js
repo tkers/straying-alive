@@ -97,11 +97,20 @@ export const createWorld = () => {
       filter: asArray(filter),
       entities: entities.filter(hasComponent(filter)),
       tags: [],
+      isActive: true,
       fn
     };
 
     newSys.addTag = t => {
       newSys.tags[t] = true;
+    };
+
+    newSys.pause = () => {
+      newSys.isActive = false;
+    };
+
+    newSys.resume = () => {
+      newSys.isActive = true;
     };
 
     systems.push(newSys);
@@ -132,7 +141,7 @@ export const createWorld = () => {
   };
 
   const update = ctx => {
-    systems.forEach(sys => sys.fn(sys.entities, ctx));
+    systems.filter(s => s.isActive).forEach(sys => sys.fn(sys.entities, ctx));
   };
 
   return {
