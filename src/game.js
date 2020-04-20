@@ -27,7 +27,8 @@ import {
   TimedSpawnSystem,
   BucketSpawnSystem,
   HungrySpawnSystem,
-  CullingSystem
+  CullingSystem,
+  GameOverScreenSystem
 } from "./systems";
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
@@ -143,9 +144,16 @@ export const createGame = (canvas, w = 960, h = 640) => {
     }
   });
 
+  world.addGlobalSystem(GameOverScreenSystem(canvas, w, h, globalState));
+
   world.on("game-over", () => {
     globalState.alive = false;
     world.getSystems("gameplay").forEach(s => s.pause());
+
+    globalState.highScore = window.localStorage.getItem("highscore");
+    if (globalState.score > globalState.highScore) {
+      window.localStorage.setItem("highscore", globalState.score);
+    }
   });
 
   return world;

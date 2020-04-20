@@ -27,6 +27,7 @@ export const RenderSystem = (canvas, w, h, globalState) => {
   const ctx = canvas.getContext("2d");
   resizeCanvas(canvas, w, h);
   return (ents, dt) => {
+    ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // selection dashes
@@ -430,3 +431,72 @@ export const DecaySystem = (ents, dt) =>
       ent.destroy();
     }
   });
+
+const drawText = (ctx, str, x, y, size = 60, lineWidth = 3, color = "#000") => {
+  ctx.font = `${size}px Nanum Pen Script`;
+  ctx.strokeStyle = "#C2B8C3";
+  ctx.lineWidth = lineWidth;
+  ctx.strokeText(str, x, y + 1);
+  ctx.strokeStyle = "#FFFFFF";
+  ctx.strokeText(str, x, y);
+  ctx.fillStyle = color;
+  ctx.fillText(str, x, y);
+};
+
+export const GameOverScreenSystem = (canvas, w, h, globalState) => {
+  const ctx = canvas.getContext("2d");
+  let time = 0;
+  return dt => {
+    if (globalState.alive) return;
+
+    time += dt * 0.8;
+    time = Math.min(time, 1);
+
+    ctx.globalAlpha = 0.9 * time;
+    ctx.fillStyle = "#f6e5f5";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.globalAlpha = Math.min(Math.max(2 * (time - 0.5), 0), 1);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    drawText(
+      ctx,
+      "Game Over",
+      w / 2,
+      h / 2 - 40 - ctx.globalAlpha * 10,
+      60,
+      3,
+      "#7ACCAF"
+    );
+    globalState.score > globalState.highScore &&
+      drawText(
+        ctx,
+        "NEW HIGH SCORE!",
+        w / 2,
+        h / 2 - 5 - ctx.globalAlpha * 20,
+        20,
+        3,
+        "#000"
+      );
+    drawText(
+      ctx,
+      `${globalState.score.toString().padStart(5, "0")} points`,
+      w / 2,
+      h / 2 + 25,
+      30,
+      3
+    );
+    globalState.highScore &&
+      drawText(
+        ctx,
+        `(high score: ${globalState.highScore
+          .toString()
+          .padStart(5, "0")} points)`,
+        w / 2,
+        h / 2 + 50,
+        20,
+        3
+      );
+  };
+};

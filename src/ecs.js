@@ -13,6 +13,7 @@ export const createWorld = () => {
 
   const addEntityToSystems = ent => {
     systems
+      .filter(sys => !sys.isGlobal)
       .filter(sys => !sys.entities.includes(ent))
       .filter(sys => hasComponents(sys.filter)(ent))
       .forEach(sys => sys.entities.push(ent));
@@ -20,6 +21,7 @@ export const createWorld = () => {
 
   const removeEntityFromSystems = ent => {
     systems
+      .filter(sys => !sys.isGlobal)
       .filter(sys => sys.entities.includes(ent))
       .filter(sys => !hasComponents(sys.filter)(ent))
       .forEach(sys => (sys.entities = sys.entities.filter(e => e !== ent)));
@@ -54,7 +56,7 @@ export const createWorld = () => {
   const addEntity = ent => {
     ent.added = true;
     systems
-      .filter(sys => hasComponents(sys.filter)(ent))
+      .filter(sys => !sys.isGlobal && hasComponents(sys.filter)(ent))
       .forEach(sys => sys.entities.push(ent));
     entities.push(ent);
   };
@@ -64,9 +66,9 @@ export const createWorld = () => {
     if (ix > -1) {
       entities.splice(ix, 1);
     }
-    systems.forEach(
-      sys => (sys.entities = sys.entities.filter(e => e !== ent))
-    );
+    systems
+      .filter(sys => !sys.isGlobal)
+      .forEach(sys => (sys.entities = sys.entities.filter(e => e !== ent)));
   };
 
   const createEntity = init => {
@@ -97,10 +99,15 @@ export const createWorld = () => {
   const getSystems = q => (q ? systems.filter(s => s.tags[q]) : systems);
 
   const addSystem = (filter, fn) => {
+    if (typeof fn === "undefined") {
+      fn = filter;
+      filter = null;
+    }
     const newSys = {
       id: ++_sysn,
-      filter: asArray(filter),
-      entities: entities.filter(hasComponent(filter)),
+      filter: filter && asArray(filter),
+      entities: filter && entities.filter(hasComponent(filter)),
+      isGlobal: !filter,
       tags: [],
       isActive: true,
       fn
@@ -121,6 +128,8 @@ export const createWorld = () => {
     systems.push(newSys);
     return newSys;
   };
+
+  const addGlobalSystem = fn => addSystem(fn);
 
   const removeSystem = sys => {
     const ix = systems.indexOf(sys);
@@ -146,7 +155,15 @@ export const createWorld = () => {
   };
 
   const update = ctx => {
-    systems.filter(s => s.isActive).forEach(sys => sys.fn(sys.entities, ctx));
+    systems
+      .filter(s => s.isActive)
+      .forEach(sys => {
+        if (sys.isGlobal) {
+          sys.fn(ctx);
+        } else {
+          sys.fn(sys.entities, ctx);
+        }
+      });
   };
 
   return {
@@ -154,6 +171,7 @@ export const createWorld = () => {
     getSystems,
     createEntity,
     addSystem,
+    addGlobalSystem,
     on: addListener,
     emit,
     update
