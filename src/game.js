@@ -114,10 +114,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addTag("gameplay");
 
   // lifecycle
-  world.addSystem(
-    [PositionComponent],
-    CullingSystem(-20, -20, canvas.width + 20, canvas.height + 20)
-  );
+  world.addSystem([PositionComponent], CullingSystem(-20, -20, w + 20, h + 20));
   world.addSystem([DecayComponent], DecaySystem);
 
   // game flow
