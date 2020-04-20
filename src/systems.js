@@ -454,6 +454,23 @@ export const CullingSystem = (minX, minY, maxX, maxY) => ents =>
     }
   });
 
+export const WrappingSystem = (minX, minY, maxX, maxY) => ents =>
+  ents.forEach(ent => {
+    const { x, y } = ent.components.PositionComponent;
+    if (ent.components.PositionComponent.x < minX) {
+      ent.components.PositionComponent.x = maxX;
+    }
+    if (ent.components.PositionComponent.y < minY) {
+      ent.components.PositionComponent.y = maxY;
+    }
+    if (ent.components.PositionComponent.x > maxX) {
+      ent.components.PositionComponent.x = minX;
+    }
+    if (ent.components.PositionComponent.y > maxY) {
+      ent.components.PositionComponent.y = minY;
+    }
+  });
+
 export const DecaySystem = (ents, dt) =>
   ents.forEach(ent => {
     if (ent.components.DecayComponent.delay > 0) {
