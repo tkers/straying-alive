@@ -70,7 +70,7 @@ export const food = parent => ent =>
     .addComponent(
       new SpriteComponent(FOOD_RAD, parent.components.SpriteComponent.color)
     )
-    .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(1)))
+    .addComponent(new SpriteFadeComponent("#7ACCAF", 5, FOOD_TIM + rnd(0.2)))
     .addComponent(new MembraneComponent(3, "#fff"))
     .addComponent(new VelocityComponent(FOOD_SPD, rnd(360)))
     .addComponent(new DecayComponent(5, 10))
