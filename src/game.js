@@ -145,6 +145,8 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world.addGlobalSystem(GameOverScreenSystem(canvas, w, h, globalState));
 
   world.on("game-over", () => {
+    if (!globalState.alive) return;
+
     globalState.alive = false;
     world.getSystems("gameplay").forEach(s => s.pause());
 
