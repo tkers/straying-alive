@@ -25,30 +25,6 @@ const makeInterval = (delay, variance = 0) => {
   };
 };
 
-const makeBucket = (capacity, inRate, outRate) => {
-  let tokens = capacity;
-  let inDelay = inRate;
-  let outDelay = rnd(outRate);
-  return dt => {
-    inDelay -= dt;
-    if (inDelay < 0) {
-      inDelay = inRate;
-      if (tokens < capacity) {
-        tokens++;
-      }
-    }
-    outDelay -= dt;
-    if (outDelay < 0) {
-      outDelay = rnd(outRate);
-      if (tokens > 0) {
-        tokens--;
-        return true;
-      }
-    }
-    return false;
-  };
-};
-
 export function PositionComponent(x, y) {
   this.x = x;
   this.y = y;
@@ -127,9 +103,34 @@ export function TimedSpawnComponent(assemblage, interval, variance) {
   this.assemblage = assemblage;
 }
 
-export function BucketSpawnComponent(assemblage, capacity, inRate, outRate) {
-  this.bucket = makeBucket(capacity, inRate, outRate);
+export function BucketSpawnComponent(assemblage, capacity, inDelay, outDelay) {
   this.assemblage = assemblage;
+  this.capacity = capacity;
+  this.inDelay = inDelay;
+  this.outDelay = outDelay;
+
+  this.tokens = capacity;
+  this.inTimer = inDelay;
+  this.outTimer = rnd(outDelay);
+
+  this.bucket = dt => {
+    this.inTimer -= dt;
+    if (this.inTimer < 0) {
+      this.inTimer = this.inDelay;
+      if (this.tokens < this.capacity) {
+        this.tokens++;
+      }
+    }
+    this.outTimer -= dt;
+    if (this.outTimer < 0) {
+      this.outTimer = rnd(this.outDelay);
+      if (this.tokens > 0) {
+        this.tokens--;
+        return true;
+      }
+    }
+    return false;
+  };
 }
 
 export function HungrySpawnComponent(assemblage, required) {

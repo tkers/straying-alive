@@ -53,7 +53,10 @@ export const base = ent =>
     .addComponent(new PositionComponent(WIDTH / 2, HEIGHT / 2))
     .addComponent(new SpriteComponent(BASE_RAD, "#f5e4aa"))
     .addComponent(new MembraneComponent(5, "#fff"))
-    .addComponent(new HungrySpawnComponent(blob(ent), 5));
+    .addComponent(new HungrySpawnComponent(blob(ent), 5))
+    .on("eat-food", () => {
+      ent.components.HungrySpawnComponent.food++;
+    });
 
 export const food = parent => ent =>
   ent
