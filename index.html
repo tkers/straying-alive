@@ -18,12 +18,19 @@
         text-align: center;
         margin-top: 40px;
       }
+      .preload {
+        font-family: "Nanum Pen Script";
+        position: absolute;
+        opacity: 0;
+        user-select: none;
+      }
       #root {
         background-color: #f6e5f5;
         box-shadow: 0 2px 8px #000;
         border-radius: 2px;
         transition-property: opacity;
         transition-duration: 0.1s;
+        user-select: none;
       }
       footer {
         margin-top: 20px;
@@ -36,6 +43,7 @@
         color: #888;
         font-size: 12px;
         cursor: default;
+        user-select: none;
       }
       footer b {
         color: #000;
@@ -56,6 +64,7 @@
     <footer>
       Straying Alive <b>&bull;</b>
       <a href="https://github.com/tkers/straying-alive">source</a>
+      <span class="preload">abc123</span>
     </footer>
   </body>
 </html>
