@@ -36,7 +36,9 @@ export const createGame = (canvas, w = 960, h = 640) => {
   const globalState = { score: 0, alive: true };
   const world = createWorld();
 
-  const hq = world.createEntity(base);
+  const hq = world.createEntity(base).on("eat-food", ent => {
+    ent.components.HungrySpawnComponent.food++;
+  });
   world.createEntity(enemyBase(hq));
   setTimeout(() => {
     world.createEntity(blob(hq));
@@ -103,10 +105,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addTag("gameplay");
 
   // collisions
-  world.addSystem(
-    [PositionComponent, SpriteComponent],
-    FoodNomSystem(world, hq)
-  );
+  world.addSystem([PositionComponent, SpriteComponent], FoodNomSystem(world));
   world
     .addSystem([PositionComponent, SpriteComponent], NomSystem(world))
     .addTag("gameplay");

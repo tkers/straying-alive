@@ -82,6 +82,11 @@ export const createWorld = () => {
     newEnt.removeTag = t => removeTag(newEnt, t);
     newEnt.hasTag = t => hasTag(t)(newEnt);
     newEnt.destroy = () => removeEntity(newEnt);
+    newEnt.on = (name, fn) => {
+      addListener(name, (...data) => fn(newEnt, ...data));
+      return newEnt;
+    };
+    newEnt.emit = emit;
     if (init instanceof Function) {
       init(newEnt);
     }

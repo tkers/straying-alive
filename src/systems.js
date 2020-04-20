@@ -303,7 +303,7 @@ export const SpriteFadeSystem = (ents, dt) =>
     }
   });
 
-export const FoodNomSystem = (world, base) => (ents, dt) => {
+export const FoodNomSystem = world => (ents, dt) => {
   const n = combinations(ents, hasTag("blob"), hasTag("food"));
   n.filter(
     ([blob, food]) =>
@@ -317,7 +317,6 @@ export const FoodNomSystem = (world, base) => (ents, dt) => {
         food.components.SpriteComponent.size
   ).forEach(([blob, food]) => {
     food.destroy();
-    base.components.HungrySpawnComponent.food++;
     world.emit("eat-food");
   });
 };
