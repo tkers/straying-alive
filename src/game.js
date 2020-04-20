@@ -35,7 +35,10 @@ import {
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
 
-export const createGame = (canvas, w = 960, h = 640) => {
+const WIDTH = 960;
+const HEIGHT = 640;
+
+export const createGame = canvas => {
   const globalState = { score: 0, alive: true };
   const world = createWorld();
 
@@ -64,7 +67,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   // visuals
   world.addSystem(
     [SpriteComponent, PositionComponent],
-    RenderSystem(canvas, w, h, globalState)
+    RenderSystem(canvas, WIDTH, HEIGHT, globalState)
   );
   world
     .addSystem([SpriteComponent, SpriteFadeComponent], SpriteFadeSystem)
@@ -129,7 +132,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addTag("pausable");
 
   // lifecycle
-  world.addSystem([PositionComponent], CullingSystem(-20, -20, w + 20, h + 20));
+  world.addSystem(
+    [PositionComponent],
+    CullingSystem(-20, -20, WIDTH + 20, HEIGHT + 20)
+  );
   world.addSystem([DecayComponent], DecaySystem).addTag("pausable");
 
   // game flow
@@ -165,8 +171,10 @@ export const createGame = (canvas, w = 960, h = 640) => {
   });
 
   // game state changes
-  world.addGlobalSystem(GameOverScreenSystem(canvas, w, h, globalState));
-  world.addGlobalSystem(PauseSystem(world, canvas, w, h));
+  world.addGlobalSystem(
+    GameOverScreenSystem(canvas, WIDTH, HEIGHT, globalState)
+  );
+  world.addGlobalSystem(PauseSystem(world, canvas, WIDTH, HEIGHT));
 
   world.on("game-over", () => {
     if (!globalState.alive) return;
