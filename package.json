@@ -1,9 +1,9 @@
 {
-  "name": "ld46",
+  "name": "straying-alive",
   "version": "1.0.0",
   "description": "ldjam 46 game",
   "main": "server.js",
-  "repository": "git@github.com:tkers/ld46.git",
+  "repository": "git@github.com:tkers/straying-alive.git",
   "author": "Tijn Kersjes <tijn@divbyzero.nl>",
   "scripts": {
     "build": "rollup -c",
