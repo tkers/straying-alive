@@ -28,7 +28,8 @@ import {
   BucketSpawnSystem,
   HungrySpawnSystem,
   CullingSystem,
-  GameOverScreenSystem
+  GameOverScreenSystem,
+  SecondChanceSystem
 } from "./systems";
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
@@ -129,6 +130,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   world
     .addSystem([HungrySpawnComponent], HungrySpawnSystem(world))
     .addTag("gameplay");
+  world.addSystem(["blob"], SecondChanceSystem(world, blob(hq)));
 
   world.on("eat-food", () => {
     if (globalState.alive) {
@@ -153,12 +155,6 @@ export const createGame = (canvas, w = 960, h = 640) => {
     globalState.highScore = window.localStorage.getItem("highscore");
     if (globalState.score > globalState.highScore) {
       window.localStorage.setItem("highscore", globalState.score);
-    }
-  });
-
-  world.addSystem(["blob"], ents => {
-    if (ents.length === 0) {
-      world.emit("game-over");
     }
   });
 

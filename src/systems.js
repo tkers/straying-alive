@@ -500,3 +500,19 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
       );
   };
 };
+
+export const SecondChanceSystem = (world, assemblage) => {
+  let respawnDelay = 3000;
+  let isRespawning = false;
+  return ents => {
+    if (ents.length === 0 && !isRespawning) {
+      isRespawning = true;
+      console.log("respawn in", respawnDelay);
+      setTimeout(() => {
+        world.createEntity(assemblage);
+        isRespawning = false;
+      }, respawnDelay);
+      respawnDelay *= 1.4;
+    }
+  };
+};
