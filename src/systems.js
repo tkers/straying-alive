@@ -7,7 +7,7 @@ import {
   SpriteFadeComponent,
   DecayComponent,
   ControllableComponent,
-  TimedSpawnComponent,
+  DelayedSpawnComponent,
   BucketSpawnComponent,
   HungrySpawnComponent
 } from "./components";
@@ -57,6 +57,38 @@ export const RenderSystem = (canvas, w, h, globalState) => {
         ctx.stroke();
         ctx.setLineDash([]);
       });
+
+    // spawn timer
+    ents.filter(hasComponent(DelayedSpawnComponent)).forEach(ent => {
+      const remaining = Math.min(
+        Math.max(
+          ent.components.DelayedSpawnComponent.left /
+            ent.components.DelayedSpawnComponent.delay,
+          0
+        ),
+        1
+      );
+
+      const segs = 25;
+      const circleSize =
+        5 +
+        ent.components.SpriteComponent.size +
+        ent.components.MembraneComponent.size;
+      const dotSize = 2;
+      const fill = Math.ceil(remaining * segs);
+
+      for (let i = 0; i < fill; i++) {
+        const r = (i / segs) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(r) * circleSize + ent.components.PositionComponent.x;
+        const y = Math.sin(r) * circleSize + ent.components.PositionComponent.y;
+
+        ctx.fillStyle = "#FFF";
+        ctx.globalAlpha = i === fill - 1 ? 1 - fill + remaining * segs : 1;
+        ctx.beginPath();
+        ctx.arc(x, y, dotSize, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
 
     // membrane circle
     ents.filter(hasComponent(MembraneComponent)).forEach(ent => {
@@ -383,10 +415,11 @@ export const BadNomSystem = world => (ents, dt) => {
   });
 };
 
-export const TimedSpawnSystem = world => (ents, dt) =>
+export const DelayedSpawnSystem = world => (ents, dt) =>
   ents.forEach(ent => {
-    if (ent.components.TimedSpawnComponent.interval(dt)) {
-      world.createEntity(ent.components.TimedSpawnComponent.assemblage);
+    if (ent.components.DelayedSpawnComponent.tick(dt)) {
+      world.createEntity(ent.components.DelayedSpawnComponent.assemblage);
+      ent.removeComponent(DelayedSpawnComponent);
     }
   });
 
@@ -535,16 +568,11 @@ export const PauseSystem = (world, canvas, w, h) => {
   };
 };
 
-export const SecondChanceSystem = (world, assemblage) => {
-  let respawnDelay = 3000;
-  let isRespawning = false;
+export const SecondChanceSystem = (target, assemblage) => {
+  let respawnDelay = 3;
   return ents => {
-    if (ents.length === 0 && !isRespawning) {
-      isRespawning = true;
-      setTimeout(() => {
-        world.createEntity(assemblage);
-        isRespawning = false;
-      }, respawnDelay);
+    if (ents.length === 0 && !target.hasComponent(DelayedSpawnComponent)) {
+      target.addComponent(new DelayedSpawnComponent(assemblage, respawnDelay));
       respawnDelay *= 1.4;
     }
   };

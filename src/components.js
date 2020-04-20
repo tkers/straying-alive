@@ -12,19 +12,6 @@ const makeTimer = delay => {
   };
 };
 
-const makeInterval = (delay, variance = 0) => {
-  let time = delay + rnd(-variance, variance);
-  return dt => {
-    if (time < 0) {
-      time = delay + rnd(-variance, variance);
-      return true;
-    } else {
-      time -= dt;
-      return false;
-    }
-  };
-};
-
 export function PositionComponent(x, y) {
   this.x = x;
   this.y = y;
@@ -98,9 +85,18 @@ export function ControllableComponent(speed, turnSpeed) {
   this.turnSpeed = turnSpeed;
 }
 
-export function TimedSpawnComponent(assemblage, interval, variance) {
-  this.interval = makeInterval(interval, variance);
+export function DelayedSpawnComponent(assemblage, delay) {
   this.assemblage = assemblage;
+  this.delay = delay;
+  this.left = delay;
+  this.tick = dt => {
+    if (this.left < 0) {
+      return true;
+    } else {
+      this.left -= dt;
+      return false;
+    }
+  };
 }
 
 export function BucketSpawnComponent(assemblage, capacity, inDelay, outDelay) {

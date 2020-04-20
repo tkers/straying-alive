@@ -8,7 +8,7 @@ import {
   TargetComponent,
   WanderComponent,
   ControllableComponent,
-  TimedSpawnComponent,
+  DelayedSpawnComponent,
   BucketSpawnComponent,
   HungrySpawnComponent
 } from "./components";
@@ -24,7 +24,7 @@ import {
   FoodNomSystem,
   NomSystem,
   BadNomSystem,
-  TimedSpawnSystem,
+  DelayedSpawnSystem,
   BucketSpawnSystem,
   HungrySpawnSystem,
   CullingSystem,
@@ -134,7 +134,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
 
   // game flow
   world
-    .addSystem([TimedSpawnComponent], TimedSpawnSystem(world))
+    .addSystem([DelayedSpawnComponent], DelayedSpawnSystem(world))
     .addTag("gameplay")
     .addTag("pausable");
   world
@@ -146,7 +146,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addTag("gameplay")
     .addTag("pausable");
   world
-    .addSystem(["blob"], SecondChanceSystem(world, blob(hq)))
+    .addSystem(["blob"], SecondChanceSystem(hq, blob(hq)))
     .addTag("pausable");
 
   // scoring

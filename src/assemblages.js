@@ -7,7 +7,7 @@ import {
   WanderComponent,
   ControllableComponent,
   DecayComponent,
-  TimedSpawnComponent,
+  DelayedSpawnComponent,
   BucketSpawnComponent,
   HungrySpawnComponent
 } from "./components";
