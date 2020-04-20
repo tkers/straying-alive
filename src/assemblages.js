@@ -130,9 +130,4 @@ export const enemyBase = target => ent =>
         2,
         Math.ceil(12 - (10 / 1500) * score)
       );
-      console.log([
-        ent.components.BucketSpawnComponent.capacity,
-        ent.components.BucketSpawnComponent.inDelay,
-        ent.components.BucketSpawnComponent.outDelay
-      ]);
     });
