@@ -41,9 +41,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
     ent.components.HungrySpawnComponent.food++;
   });
   world.createEntity(enemyBase(hq));
-  setTimeout(() => {
-    world.createEntity(blob(hq));
-  }, 200);
+  world.createEntity(blob(hq));
 
   // debugging tools
   window.spawnEnemy = () => world.createEntity(enemy(hq));
@@ -153,6 +151,12 @@ export const createGame = (canvas, w = 960, h = 640) => {
     globalState.highScore = window.localStorage.getItem("highscore");
     if (globalState.score > globalState.highScore) {
       window.localStorage.setItem("highscore", globalState.score);
+    }
+  });
+
+  world.addSystem(["blob"], ents => {
+    if (ents.length === 0) {
+      world.emit("game-over");
     }
   });
 
