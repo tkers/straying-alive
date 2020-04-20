@@ -49,6 +49,7 @@ export const createGame = (canvas, w = 960, h = 640) => {
   window.spawnFood = () => world.createEntity(food(hq));
 
   window.addEventListener("keydown", ev => {
+    if (!ev.ctrlKey) return;
     if (ev.key === "e") {
       window.spawnEnemy();
     }
