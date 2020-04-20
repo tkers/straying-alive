@@ -127,7 +127,7 @@ export const enemyBase = target => ent =>
         Math.ceil(5 - (4 / 1200) * score)
       );
       ent.components.BucketSpawnComponent.outDelay = Math.max(
-        2,
-        Math.ceil(12 - (10 / 1500) * score)
+        3,
+        Math.ceil(12 - (9 / 1500) * score)
       );
     });
