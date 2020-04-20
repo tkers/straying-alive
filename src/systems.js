@@ -507,7 +507,6 @@ export const SecondChanceSystem = (world, assemblage) => {
   return ents => {
     if (ents.length === 0 && !isRespawning) {
       isRespawning = true;
-      console.log("respawn in", respawnDelay);
       setTimeout(() => {
         world.createEntity(assemblage);
         isRespawning = false;
