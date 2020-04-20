@@ -115,6 +115,7 @@ export const createWorld = () => {
 
     newSys.addTag = t => {
       newSys.tags[t] = true;
+      return newSys;
     };
 
     newSys.pause = () => {

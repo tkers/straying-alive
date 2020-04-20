@@ -28,6 +28,7 @@ import {
   BucketSpawnSystem,
   HungrySpawnSystem,
   CullingSystem,
+  PauseSystem,
   GameOverScreenSystem,
   SecondChanceSystem
 } from "./systems";
@@ -64,15 +65,23 @@ export const createGame = (canvas, w = 960, h = 640) => {
     [SpriteComponent, PositionComponent],
     RenderSystem(canvas, w, h, globalState)
   );
-  world.addSystem([SpriteComponent, SpriteFadeComponent], SpriteFadeSystem);
+  world
+    .addSystem([SpriteComponent, SpriteFadeComponent], SpriteFadeSystem)
+    .addTag("pausable");
 
   // movement
-  world.addSystem([PositionComponent, VelocityComponent], MovementSystem);
-  world.addSystem([VelocityComponent, WanderComponent], WanderSystem);
-  world.addSystem(
-    [PositionComponent, VelocityComponent, TargetComponent],
-    TargetSystem
-  );
+  world
+    .addSystem([PositionComponent, VelocityComponent], MovementSystem)
+    .addTag("pausable");
+  world
+    .addSystem([VelocityComponent, WanderComponent], WanderSystem)
+    .addTag("pausable");
+  world
+    .addSystem(
+      [PositionComponent, VelocityComponent, TargetComponent],
+      TargetSystem
+    )
+    .addTag("pausable");
 
   // mouse input
   world
@@ -80,13 +89,15 @@ export const createGame = (canvas, w = 960, h = 640) => {
       [ControllableComponent, PositionComponent, SpriteComponent],
       MouseSelectionSystem(canvas)
     )
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
   world
     .addSystem(
       [ControllableComponent, TargetComponent],
       MouseTargetSystem(canvas)
     )
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
 
   // touch input
   world
@@ -94,38 +105,48 @@ export const createGame = (canvas, w = 960, h = 640) => {
       [ControllableComponent, PositionComponent, SpriteComponent],
       FingerSelectionSystem(canvas)
     )
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
   world
     .addSystem(
       [ControllableComponent, PositionComponent, VelocityComponent],
       FingerTargetSystem(canvas)
     )
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
 
   // collisions
-  world.addSystem([PositionComponent, SpriteComponent], FoodNomSystem(world));
+  world
+    .addSystem([PositionComponent, SpriteComponent], FoodNomSystem(world))
+    .addTag("pausable");
   world
     .addSystem([PositionComponent, SpriteComponent], NomSystem(world))
     .addTag("gameplay");
   world
     .addSystem([PositionComponent, SpriteComponent], BadNomSystem(world))
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
 
   // lifecycle
   world.addSystem([PositionComponent], CullingSystem(-20, -20, w + 20, h + 20));
-  world.addSystem([DecayComponent], DecaySystem);
+  world.addSystem([DecayComponent], DecaySystem).addTag("pausable");
 
   // game flow
   world
     .addSystem([TimedSpawnComponent], TimedSpawnSystem(world))
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
   world
     .addSystem([BucketSpawnComponent], BucketSpawnSystem(world))
-    .addTag("gameplay");
+    .addTag("gameplay")
+    .addTag("pausable");
   world
     .addSystem([HungrySpawnComponent], HungrySpawnSystem(world))
-    .addTag("gameplay");
-  world.addSystem(["blob"], SecondChanceSystem(world, blob(hq)));
+    .addTag("gameplay")
+    .addTag("pausable");
+  world
+    .addSystem(["blob"], SecondChanceSystem(world, blob(hq)))
+    .addTag("pausable");
 
   world.on("eat-food", () => {
     if (globalState.alive) {
@@ -139,7 +160,9 @@ export const createGame = (canvas, w = 960, h = 640) => {
     }
   });
 
+  // game state changes
   world.addGlobalSystem(GameOverScreenSystem(canvas, w, h, globalState));
+  world.addGlobalSystem(PauseSystem(world, canvas, w, h));
 
   world.on("game-over", () => {
     if (!globalState.alive) return;

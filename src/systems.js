@@ -501,6 +501,40 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
   };
 };
 
+export const PauseSystem = (world, canvas, w, h) => {
+  const ctx = canvas.getContext("2d");
+  let isPaused = false;
+  let fade = 0;
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "p") {
+      isPaused = !isPaused;
+      if (isPaused) {
+        world.getSystems("pausable").forEach(s => s.pause());
+      } else {
+        world.getSystems("pausable").forEach(s => s.resume());
+      }
+    }
+  });
+  return dt => {
+    if (!isPaused && fade <= 0) return;
+
+    fade += 10 * dt * (isPaused ? 1 : -1);
+    fade = Math.min(Math.max(fade, 0), 1);
+
+    ctx.globalAlpha = fade * 0.8;
+    ctx.fillStyle = "#f6e5f5";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.globalAlpha = fade;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    drawText(ctx, "paused", w / 2, h / 2 - 15 + 5 * fade, 60, 3, "#000");
+    drawText(ctx, "TAKE A BREAK!", w / 2, h / 2 + 25 - 5 * fade, 20, 2, "#000");
+  };
+};
+
 export const SecondChanceSystem = (world, assemblage) => {
   let respawnDelay = 3000;
   let isRespawning = false;
