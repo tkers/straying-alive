@@ -571,6 +571,42 @@ export const PauseSystem = (world, canvas, w, h) => {
   };
 };
 
+export const TitleScreenSystem = (world, canvas, w, h) => {
+  const ctx = canvas.getContext("2d");
+  let fade = 10;
+  let started = false;
+  return dt => {
+    if (fade <= 0) {
+      if (!started) {
+        started = true;
+        world.emit("begin");
+      }
+      return;
+    }
+
+    fade -= dt * 3;
+
+    ctx.globalAlpha = Math.min(Math.max(fade, 0), 1);
+    ctx.fillStyle = "#f6e5f5";
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.globalAlpha =
+      fade <= 1
+        ? Math.min(Math.max(fade, 0), 1)
+        : fade <= 8
+        ? Math.min(Math.max((8 - fade) / 2, 0), 1)
+        : 0;
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    const offs = fade <= 0.9 ? (0.9 - fade) * 8 : 0;
+
+    drawText(ctx, "Straying Alive", w / 2, h / 2 - 25 - offs, 60, 3, "#7ACCAF");
+    drawText(ctx, "GET READY!", w / 2, h / 2 + 20 + offs, 20, 2, "#000");
+  };
+};
+
 export const SecondChanceSystem = (target, assemblage) => {
   let respawnDelay = 3;
   return ents => {

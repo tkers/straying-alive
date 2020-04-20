@@ -30,6 +30,7 @@ import {
   CullingSystem,
   PauseSystem,
   GameOverScreenSystem,
+  TitleScreenSystem,
   SecondChanceSystem
 } from "./systems";
 import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
@@ -43,8 +44,10 @@ export const createGame = (canvas, resetGame) => {
   const world = createWorld();
 
   const hq = world.createEntity(base);
-  world.createEntity(enemyBase(hq));
-  world.createEntity(blob(hq));
+  world.on("begin", () => {
+    world.createEntity(enemyBase(hq));
+    world.createEntity(blob(hq));
+  });
 
   // debugging tools
   window.spawnEnemy = () => world.createEntity(enemy(hq));
@@ -138,9 +141,11 @@ export const createGame = (canvas, resetGame) => {
     .addSystem([HungrySpawnComponent], HungrySpawnSystem(world))
     .addTag("gameplay")
     .addTag("pausable");
-  world
-    .addSystem(["blob"], SecondChanceSystem(hq, blob(hq)))
-    .addTag("pausable");
+  world.on("begin", () => {
+    world
+      .addSystem(["blob"], SecondChanceSystem(hq, blob(hq)))
+      .addTag("pausable");
+  });
 
   // scoring
   world.on("eat-food", () => {
@@ -158,10 +163,13 @@ export const createGame = (canvas, resetGame) => {
   });
 
   // game state changes
+  world.addGlobalSystem(TitleScreenSystem(world, canvas, WIDTH, HEIGHT));
   world.addGlobalSystem(
     GameOverScreenSystem(canvas, WIDTH, HEIGHT, globalState)
   );
-  world.addGlobalSystem(PauseSystem(world, canvas, WIDTH, HEIGHT));
+  world.on("begin", () => {
+    world.addGlobalSystem(PauseSystem(world, canvas, WIDTH, HEIGHT));
+  });
 
   world.on("game-over", () => {
     if (!globalState.alive) return;
