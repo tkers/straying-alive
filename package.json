@@ -6,8 +6,9 @@
   "repository": "git@github.com:tkers/straying-alive.git",
   "author": "Tijn Kersjes <tijn@divbyzero.nl>",
   "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w src",
+    "build": "rollup -c rollup.game.config.js && rollup -c rollup.howto.config.js",
+    "dev": "rollup -c rollup.game.config.js -w src",
+    "howto": "rollup -c rollup.howto.config.js -w src",
     "start": "node ."
   },
   "dependencies": {

@@ -16,7 +16,7 @@ body {
   opacity: 0;
   user-select: none;
 }
-#root {
+canvas {
   background-color: #f6e5f5;
   box-shadow: 0 2px 8px #000;
   border-radius: 2px;
@@ -48,4 +48,21 @@ footer a {
 }
 footer a:hover {
   color: #27d;
+}
+main.help {
+  max-width: 800px;
+  margin: 0 auto;
+}
+section {
+  display: inline-block;
+  margin: 24px;
+  padding: 16px;
+  font-family: "Nanum Pen Script";
+  font-size: 24px;
+  color: #f6e5f5;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+section canvas {
+  display: block;
+  margin: 16px auto 0;
 }
