@@ -22,10 +22,11 @@ import {
 } from "./utils";
 import { resizeCanvas } from "./canvas";
 
-let t = 0;
-export const RenderSystem = (canvas, w, h, globalState) => {
+export const RenderSystem = (canvas, w, h, globalState = {}) => {
   const ctx = canvas.getContext("2d");
   resizeCanvas(canvas, w, h);
+  let t = 0;
+
   return (ents, dt) => {
     ctx.globalAlpha = 1;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -126,21 +127,24 @@ export const RenderSystem = (canvas, w, h, globalState) => {
     });
 
     // score
-    const text = `${globalState.score.toString().padStart(5, "0")}`;
-    const x = w - 16;
-    const y = h - 10;
-    ctx.font = `30px Nanum Pen Script`;
+    // @TODO split off in sepatate system
+    if (typeof globalState.score === "number") {
+      const text = `${globalState.score.toString().padStart(5, "0")}`;
+      const x = w - 16;
+      const y = h - 10;
+      ctx.font = `30px Nanum Pen Script`;
 
-    ctx.textAlign = "right";
-    ctx.textBaseline = "bottom";
+      ctx.textAlign = "right";
+      ctx.textBaseline = "bottom";
 
-    ctx.strokeStyle = "#C2B8C3";
-    ctx.lineWidth = 2;
-    ctx.strokeText(text, x, y + 1);
-    ctx.strokeStyle = "#FFFFFF";
-    ctx.strokeText(text, x, y);
-    ctx.fillStyle = "#7ACCAF";
-    ctx.fillText(text, x, y);
+      ctx.strokeStyle = "#C2B8C3";
+      ctx.lineWidth = 2;
+      ctx.strokeText(text, x, y + 1);
+      ctx.strokeStyle = "#FFFFFF";
+      ctx.strokeText(text, x, y);
+      ctx.fillStyle = "#7ACCAF";
+      ctx.fillText(text, x, y);
+    }
   };
 };
 
