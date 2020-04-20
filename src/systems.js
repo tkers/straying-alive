@@ -482,14 +482,14 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
   return dt => {
     if (globalState.alive) return;
 
-    time += dt * 0.8;
+    time += dt * 0.5;
     time = Math.min(time, 1);
 
     ctx.globalAlpha = 0.9 * time;
     ctx.fillStyle = "#f6e5f5";
     ctx.fillRect(0, 0, w, h);
 
-    ctx.globalAlpha = Math.min(Math.max(2 * (time - 0.5), 0), 1);
+    ctx.globalAlpha = Math.min(Math.max(5 * (time - 0.5), 0), 1);
 
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
@@ -497,7 +497,9 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
       ctx,
       "Game Over",
       w / 2,
-      h / 2 - 40 - ctx.globalAlpha * 10,
+      h / 2 -
+        (globalState.score > globalState.highScore ? 50 : 30) -
+        10 * (1 - ctx.globalAlpha),
       60,
       3,
       "#7ACCAF"
@@ -507,16 +509,17 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
         ctx,
         "NEW HIGH SCORE!",
         w / 2,
-        h / 2 - 5 - ctx.globalAlpha * 20,
+        h / 2 - 25 - 10 * (1 - ctx.globalAlpha),
         20,
         3,
         "#000"
       );
+
     drawText(
       ctx,
       `${globalState.score.toString().padStart(5, "0")} points`,
       w / 2,
-      h / 2 + 25,
+      h / 2 + 25 + 10 * (1 - ctx.globalAlpha),
       30,
       3
     );
@@ -527,7 +530,7 @@ export const GameOverScreenSystem = (canvas, w, h, globalState) => {
           .toString()
           .padStart(5, "0")} points)`,
         w / 2,
-        h / 2 + 50,
+        h / 2 + 50 + 10 * (1 - ctx.globalAlpha),
         20,
         3
       );
