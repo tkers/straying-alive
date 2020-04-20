@@ -149,15 +149,18 @@ export const createGame = (canvas, w = 960, h = 640) => {
     .addSystem(["blob"], SecondChanceSystem(world, blob(hq)))
     .addTag("pausable");
 
+  // scoring
   world.on("eat-food", () => {
     if (globalState.alive) {
       globalState.score += 10;
+      world.emit("score-change", globalState.score);
     }
   });
 
   world.on("eat-enemy", () => {
     if (globalState.alive) {
       globalState.score += 50;
+      world.emit("score-change", globalState.score);
     }
   });
 

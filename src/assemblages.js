@@ -116,4 +116,23 @@ export const enemy = target => ent => {
 };
 
 export const enemyBase = target => ent =>
-  ent.addComponent(new BucketSpawnComponent(enemy(target), 2, 5, 12));
+  ent
+    .addComponent(new BucketSpawnComponent(enemy(target), 2, 5, 12))
+    .on("score-change", score => {
+      ent.components.BucketSpawnComponent.capacity = Math.floor(
+        2 + (8 / 1000) * score
+      );
+      ent.components.BucketSpawnComponent.inDelay = Math.max(
+        1,
+        Math.ceil(5 - (4 / 1200) * score)
+      );
+      ent.components.BucketSpawnComponent.outDelay = Math.max(
+        2,
+        Math.ceil(12 - (10 / 1500) * score)
+      );
+      console.log([
+        ent.components.BucketSpawnComponent.capacity,
+        ent.components.BucketSpawnComponent.inDelay,
+        ent.components.BucketSpawnComponent.outDelay
+      ]);
+    });
