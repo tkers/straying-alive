@@ -9,6 +9,7 @@ export const createWorld = () => {
   const systems = [];
   const listeners = {};
   let _entn = 0;
+  let _sysn = 0;
 
   const addEntityToSystems = ent => {
     systems
@@ -88,12 +89,21 @@ export const createWorld = () => {
     return newEnt;
   };
 
+  const getSystems = q => (q ? systems.filter(s => s.tags[q]) : systems);
+
   const addSystem = (filter, fn) => {
     const newSys = {
+      id: ++_sysn,
       filter: asArray(filter),
       entities: entities.filter(hasComponent(filter)),
+      tags: [],
       fn
     };
+
+    newSys.addTag = t => {
+      newSys.tags[t] = true;
+    };
+
     systems.push(newSys);
     return newSys;
   };
@@ -126,6 +136,8 @@ export const createWorld = () => {
   };
 
   return {
+    getEntities,
+    getSystems,
     createEntity,
     addSystem,
     on: addListener,
