@@ -11,8 +11,28 @@ const gameLoop = cb => {
   tick(0);
 };
 
+let root;
+let game;
+const resetGame = () => {
+  game = createGame(root, resetGame);
+};
+
 window.addEventListener("load", () => {
-  const root = document.getElementById("root");
-  const game = createGame(root);
-  gameLoop(game.update);
+  root = document.getElementById("root");
+  resetGame();
+  gameLoop(dt => game.update(dt));
+});
+
+// debugging tools
+window.addEventListener("keydown", ev => {
+  if (!ev.ctrlKey) return;
+  if (ev.key === "e") {
+    window.spawnEnemy();
+  }
+  if (ev.key === "b") {
+    window.spawnBlob();
+  }
+  if (ev.key === "f") {
+    window.spawnFood();
+  }
 });

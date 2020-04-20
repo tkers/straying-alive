@@ -38,7 +38,7 @@ import { base, enemyBase, blob, food, enemy } from "./assemblages";
 const WIDTH = 960;
 const HEIGHT = 640;
 
-export const createGame = canvas => {
+export const createGame = (canvas, resetGame) => {
   const globalState = { score: 0, alive: true };
   const world = createWorld();
 
@@ -50,19 +50,6 @@ export const createGame = canvas => {
   window.spawnEnemy = () => world.createEntity(enemy(hq));
   window.spawnBlob = () => world.createEntity(blob(hq));
   window.spawnFood = () => world.createEntity(food(hq));
-
-  window.addEventListener("keydown", ev => {
-    if (!ev.ctrlKey) return;
-    if (ev.key === "e") {
-      window.spawnEnemy();
-    }
-    if (ev.key === "b") {
-      window.spawnBlob();
-    }
-    if (ev.key === "f") {
-      window.spawnFood();
-    }
-  });
 
   // visuals
   world.addSystem(
@@ -186,6 +173,14 @@ export const createGame = canvas => {
     if (globalState.score > globalState.highScore) {
       window.localStorage.setItem("highscore", globalState.score);
     }
+
+    const handleRestart = () => {
+      window.removeEventListener("mousedown", handleRestart);
+      resetGame();
+    };
+    setTimeout(() => {
+      window.addEventListener("mousedown", handleRestart, false);
+    }, 1000);
   });
 
   return world;
