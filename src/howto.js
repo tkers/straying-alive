@@ -2,6 +2,7 @@ import { createWorld } from "./ecs";
 import * as C from "./components";
 import * as S from "./systems";
 import * as A from "./assemblages";
+import * as TS from "./touchSystems";
 
 import { rnd, choose, getDirection } from "./utils";
 import gameLoop from "./gameloop";
@@ -35,6 +36,14 @@ const createHelpWorld = (id, opts = {}) => {
   world.addSystem(
     [C.ControllableComponent, C.TargetComponent],
     S.MouseTargetSystem(canvas)
+  );
+  world.addSystem(
+    [C.ControllableComponent, C.PositionComponent, C.SpriteComponent],
+    TS.FingerSelectionSystem(canvas)
+  );
+  world.addSystem(
+    [C.ControllableComponent, C.PositionComponent, C.VelocityComponent],
+    TS.FingerTargetSystem(canvas)
   );
 
   // collisions
