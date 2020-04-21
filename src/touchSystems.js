@@ -1,4 +1,4 @@
-import { ControllableComponent } from "./components";
+import { ControllableComponent, TargetComponent } from "./components";
 import { getDistance, getDirection, turnToDir } from "./utils";
 
 const copyTouch = ({ identifier, pageX, pageY, target }) => ({
@@ -85,9 +85,17 @@ export const FingerSelectionSystem = canvas => {
       });
       if (ent) {
         t.entity = ent;
-        touchMap[ent] = t;
+        touchMap[ent.id] = t;
         ent.components.ControllableComponent.isSelected = true;
         ent.components.ControllableComponent.finger = true;
+        ent.addComponent(
+          new TargetComponent(
+            t.pageX,
+            t.pageY,
+            ent.components.ControllableComponent.speed,
+            ent.components.ControllableComponent.turnSpeed
+          )
+        );
         ongoingTouches.push(t);
       }
     });
@@ -95,13 +103,12 @@ export const FingerSelectionSystem = canvas => {
 
     endedTouches.forEach(t => {
       const ent = t.entity;
-      delete touchMap[ent];
+      delete touchMap[ent.id];
       if (!ent.hasComponent(ControllableComponent)) return;
 
       ent.components.ControllableComponent.isSelected = false;
       ent.components.ControllableComponent.finger = false;
-      ent.components.VelocityComponent.acceleration =
-        ent.components.VelocityComponent.maxSpeed;
+      ent.removeComponent(TargetComponent);
       if (ent.components.WanderComponent) {
         ent.components.WanderComponent.resetTimer();
       }
@@ -136,33 +143,11 @@ export const FingerTargetSystem = canvas => {
           ent.components.ControllableComponent.finger
       )
       .forEach(ent => {
-        const touch = touchMap[ent];
+        const touch = touchMap[ent.id];
         if (!touch) return; // should not happen but oh well
 
-        const dist = getDistance(
-          ent.components.PositionComponent.x,
-          ent.components.PositionComponent.y,
-          touch.pageX,
-          touch.pageY
-        );
-
-        if (dist < ent.components.VelocityComponent.speed / 2) {
-          ent.components.VelocityComponent.speed = dist;
-          ent.components.VelocityComponent.acceleration =
-            ent.components.VelocityComponent.maxSpeed * 10;
-        }
-
-        const targetDir = getDirection(
-          ent.components.PositionComponent.x,
-          ent.components.PositionComponent.y,
-          touch.pageX,
-          touch.pageY
-        );
-        ent.components.VelocityComponent.direction = turnToDir(
-          ent.components.VelocityComponent.direction,
-          targetDir,
-          ent.components.ControllableComponent.turnSpeed * dt
-        );
+        ent.components.TargetComponent.x = touch.pageX;
+        ent.components.TargetComponent.y = touch.pageY;
       });
   };
 };
