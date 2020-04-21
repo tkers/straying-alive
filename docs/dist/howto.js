@@ -4066,14 +4066,14 @@
     pageY: pageY - target.offsetTop
   });
 
-  let newTouches = [];
-  let ongoingTouches = [];
-  let endedTouches = [];
-  const touchMap = {};
+  const FingerControlSystem = canvas => {
+    let newTouches = [];
+    let ongoingTouches = [];
+    let endedTouches = [];
+    const touchMap = {};
 
-  let change = false;
+    let change = false;
 
-  const FingerSelectionSystem = canvas => {
     canvas.addEventListener(
       "touchstart",
       evt => {
@@ -4124,6 +4124,24 @@
       false
     );
 
+    canvas.addEventListener(
+      "touchmove",
+      evt => {
+        evt.preventDefault();
+        const changedTouches = evt.changedTouches;
+        for (let i = 0; i < changedTouches.length; i++) {
+          const t = changedTouches[i];
+          const x = ongoingTouches.find(o => o.identifier === t.identifier);
+          if (x) {
+            x.pageX = t.pageX - t.target.offsetLeft;
+            x.pageY = t.pageY - t.target.offsetTop;
+            change = true;
+          }
+        }
+      },
+      false
+    );
+
     return ents => {
       if (!change) return;
       change = false;
@@ -4160,40 +4178,6 @@
       });
       newTouches = [];
 
-      endedTouches.forEach(t => {
-        const ent = t.entity;
-        delete touchMap[ent.id];
-        if (!ent.hasComponent(ControllableComponent)) return;
-
-        ent.components.ControllableComponent.isSelected = false;
-        ent.components.ControllableComponent.finger = false;
-        ent.removeComponent(TargetComponent);
-        if (ent.components.WanderComponent) {
-          ent.components.WanderComponent.resetTimer();
-        }
-      });
-      endedTouches = [];
-    };
-  };
-
-  const FingerTargetSystem = canvas => {
-    canvas.addEventListener(
-      "touchmove",
-      evt => {
-        evt.preventDefault();
-        const changedTouches = evt.changedTouches;
-        for (let i = 0; i < changedTouches.length; i++) {
-          const t = changedTouches[i];
-          const x = ongoingTouches.find(o => o.identifier === t.identifier);
-          if (x) {
-            x.pageX = t.pageX - t.target.offsetLeft;
-            x.pageY = t.pageY - t.target.offsetTop;
-          }
-        }
-      },
-      false
-    );
-    return (ents, dt) => {
       ents
         .filter(
           ent =>
@@ -4208,6 +4192,20 @@
           ent.components.TargetComponent.x = touch.pageX;
           ent.components.TargetComponent.y = touch.pageY;
         });
+
+      endedTouches.forEach(t => {
+        const ent = t.entity;
+        delete touchMap[ent.id];
+        if (!ent.hasComponent(ControllableComponent)) return;
+
+        ent.components.ControllableComponent.isSelected = false;
+        ent.components.ControllableComponent.finger = false;
+        ent.removeComponent(TargetComponent);
+        if (ent.components.WanderComponent) {
+          ent.components.WanderComponent.resetTimer();
+        }
+      });
+      endedTouches = [];
     };
   };
 
@@ -4254,11 +4252,7 @@
     );
     world.addSystem(
       [ControllableComponent, PositionComponent, SpriteComponent],
-      FingerSelectionSystem(canvas)
-    );
-    world.addSystem(
-      [ControllableComponent, PositionComponent, VelocityComponent],
-      FingerTargetSystem(canvas)
+      FingerControlSystem(canvas)
     );
 
     // collisions

@@ -33,7 +33,7 @@ import {
   TitleScreenSystem,
   SecondChanceSystem
 } from "./systems";
-import { FingerSelectionSystem, FingerTargetSystem } from "./touchSystems";
+import { FingerControlSystem } from "./touchSystems";
 import { base, enemyBase, blob, food, enemy } from "./assemblages";
 
 const WIDTH = 960;
@@ -97,14 +97,7 @@ export const createGame = (canvas, resetGame) => {
   world
     .addSystem(
       [ControllableComponent, PositionComponent, SpriteComponent],
-      FingerSelectionSystem(canvas)
-    )
-    .addTag("gameplay")
-    .addTag("pausable");
-  world
-    .addSystem(
-      [ControllableComponent, PositionComponent, VelocityComponent],
-      FingerTargetSystem(canvas)
+      FingerControlSystem(canvas)
     )
     .addTag("gameplay")
     .addTag("pausable");

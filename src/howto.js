@@ -39,11 +39,7 @@ const createHelpWorld = (id, opts = {}) => {
   );
   world.addSystem(
     [C.ControllableComponent, C.PositionComponent, C.SpriteComponent],
-    TS.FingerSelectionSystem(canvas)
-  );
-  world.addSystem(
-    [C.ControllableComponent, C.PositionComponent, C.VelocityComponent],
-    TS.FingerTargetSystem(canvas)
+    TS.FingerControlSystem(canvas, id)
   );
 
   // collisions
