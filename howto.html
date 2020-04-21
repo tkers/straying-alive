@@ -8,18 +8,37 @@
     <script type="text/javascript" src="dist/howto.js"></script>
   </head>
   <body>
+    <header><a href="index.html">Straying Alive</a></header>
     <main class="help">
       <section>
-        You control the green cells <canvas id="help-blob"></canvas>
+        <canvas id="help-blob"></canvas>
+        <div>
+          The green cells are the <span class="green">good cells</span> – your
+          pals. You control them by dragging them around.
+        </div>
       </section>
       <section>
-        Your base can spawn new cells <canvas id="help-base"></canvas>
+        <div>
+          Your main goal is to <span class="yellow">protect the base</span>.
+          Once an enemy touches it, the game ends.
+        </div>
+        <canvas id="help-base"></canvas>
       </section>
       <section>
-        Collect food to spawn new cells<canvas id="help-food"></canvas>
+        <canvas id="help-enemy"></canvas>
+        <div>
+          <span class="red">Enemy cells!</span> Collect food left behind by them
+          to spawn new friendly cells.
+        </div>
       </section>
       <section>
-        Enemy cells attack your base<canvas id="help-enemy"></canvas>
+        <div>
+          If a <span class="green">cell</span> touches an
+          <span class="red">enemy</span>, they both die. Lost your last green
+          pal? The <span class="yellow">base</span> will spawn you a new one
+          after a while.
+        </div>
+        <canvas id="help-kill"></canvas>
       </section>
     </main>
     <footer>

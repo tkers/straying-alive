@@ -42,7 +42,7 @@ const createHelpWorld = (id, opts = {}) => {
     [C.PositionComponent, C.SpriteComponent],
     S.FoodNomSystem(world)
   );
-  // world.addSystem([C.PositionComponent, C.SpriteComponent], S.NomSystem(world));
+  world.addSystem([C.PositionComponent, C.SpriteComponent], S.NomSystem(world));
   // world.addSystem(
   //   [C.PositionComponent, C.SpriteComponent],
   //   S.BadNomSystem(world)
@@ -61,10 +61,6 @@ const createHelpWorld = (id, opts = {}) => {
   world.addSystem([C.DelayedSpawnComponent], S.DelayedSpawnSystem(world));
   world.addSystem([C.BucketSpawnComponent], S.BucketSpawnSystem(world));
   world.addSystem([C.HungrySpawnComponent], S.HungrySpawnSystem(world));
-
-  // world
-  //   .addSystem(["blob"], SecondChanceSystem(hq, blob(hq)))
-  //   .addTag("pausable");
 
   gameLoop(world.update);
 
@@ -160,7 +156,7 @@ const enemy = ent =>
         directionVar: 45
       })
     )
-    .addComponent(new C.BucketSpawnComponent(food(ent), 3, 1, 4));
+    .addComponent(new C.BucketSpawnComponent(food(ent), 2, 2, 5));
 
 const createBlobHelp = id => {
   const world = createHelpWorld(id);
@@ -174,25 +170,57 @@ const createBaseHelp = id => {
   world.addSystem(["blob"], S.SecondChanceSystem(hq, blob(hq)));
 };
 
-const createFoodHelp = id => {
-  const world = createHelpWorld(id);
-  world.createEntity(blob());
-  world.createEntity(food());
-  world.createEntity(food());
-  world.createEntity(food());
-  setInterval(() => world.createEntity(food()), 5000);
-};
-
 const createEnemyHelp = id => {
   const world = createHelpWorld(id);
   world.createEntity(enemy);
-  // world.createEntity(blob);
-  // world.on("eat-food", () => world.createEntity(blob));
+  world.createEntity(enemy);
+};
+
+const createKillHelp = id => {
+  const world = createHelpWorld(id, { cull: true });
+  const loop = () => {
+    const b = world
+      .createEntity(blob())
+      .removeComponent(C.WanderComponent)
+      .removeComponent(C.ControllableComponent);
+    const bx = -20;
+    const by = rnd(HEIGHT);
+    b.components.PositionComponent.x = bx;
+    b.components.PositionComponent.y = by;
+    b.components.VelocityComponent.baseSpeed = 60;
+    b.components.VelocityComponent.acceleration = 100;
+    b.components.VelocityComponent.direction = getDirection(
+      -20,
+      by,
+      WIDTH / 2,
+      HEIGHT / 2
+    );
+
+    setTimeout(() => {
+      const e = world
+        .createEntity(enemy)
+        .removeComponent(C.WanderComponent)
+        .removeComponent(C.BucketSpawnComponent);
+      const ex = WIDTH + 20;
+      const ey = rnd(HEIGHT);
+      e.components.PositionComponent.x = ex;
+      e.components.PositionComponent.y = ey;
+      e.components.VelocityComponent.direction = getDirection(
+        ex,
+        ey,
+        WIDTH / 2,
+        HEIGHT / 2
+      );
+    }, 1500);
+  };
+
+  setInterval(loop, 4000);
+  loop();
 };
 
 window.addEventListener("load", () => {
   createBlobHelp("help-blob");
   createBaseHelp("help-base");
-  createFoodHelp("help-food");
   createEnemyHelp("help-enemy");
+  createKillHelp("help-kill");
 });
