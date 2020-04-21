@@ -1,6 +1,6 @@
 # Straying Alive
 
-**[Play now!](http://straying-alive.tkers.nl)**
+**[Play now!](https://tkers.nl/ldjam46)**
 
 Eat enemy cells, protect the base, keep it alive!
 Made during [Ludum Dare 46](https://ldjam.com/events/ludum-dare/46).
