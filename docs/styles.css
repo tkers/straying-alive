@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap");
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+body {
+  background-color: #222;
+  text-align: center;
+  margin-top: 40px;
+}
+.preload {
+  font-family: "Nanum Pen Script";
+  position: absolute;
+  opacity: 0;
+  user-select: none;
+}
+canvas {
+  background-color: #f6e5f5;
+  box-shadow: 0 2px 8px #000;
+  border-radius: 2px;
+  transition-property: opacity;
+  transition-duration: 0.1s;
+  user-select: none;
+}
+footer {
+  margin: 24px;
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 500px;
+  background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 0 #000 inset;
+  font-family: sans-serif;
+  color: #888;
+  font-size: 12px;
+  cursor: default;
+  user-select: none;
+}
+footer b {
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.1);
+  margin: 0 4px;
+}
+a {
+  color: #26a;
+  text-decoration: none;
+}
+footer a:hover {
+  color: #27d;
+}
+
+.green {
+  color: #7accaf;
+}
+.yellow {
+  color: #f5e4aa;
+}
+.red {
+  color: #da7783;
+}
+
+header,
+header a {
+  font-family: "Nanum Pen Script";
+  font-size: 60px;
+  color: #7accaf;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  margin: 24px;
+}
+
+main.help {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+section {
+  margin: 10px;
+  font-family: "Nanum Pen Script";
+  font-size: 30px;
+  color: #f6e5f5;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+section div {
+  display: inline-block;
+  vertical-align: middle;
+  max-width: 320px;
+  margin: 0 16px;
+  text-align: left;
+}
+section canvas {
+  vertical-align: middle;
+  margin: 16px;
+}
